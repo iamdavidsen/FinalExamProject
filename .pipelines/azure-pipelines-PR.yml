@@ -1,0 +1,37 @@
+trigger: none
+    
+variables:
+  buildConfiguration: Release
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - template: ./templates/versioning.yml
+
+  - task: UseDotNet@2
+    displayName: 'Install .NET 5.X'
+    inputs:
+      packageType: 'sdk'
+      version: '5.x'
+
+  - template: ./templates/codestyle.yml
+
+  - task: DotNetCoreCLI@2
+    displayName: '.NET Restore'
+    inputs:
+      command: 'restore'
+      projects: '**/*.sln'
+      restoreArguments: '/property:Configuration=$(buildConfiguration)'
+      feedsToUse: 'select'
+      vstsFeed: 'ff228801-a7a1-470f-a6d3-d30a0101f187'
+      verbosityRestore: 'Normal'
+
+  - task: DotNetCoreCLI@2
+    displayName: '.NET Build'
+    inputs:
+      command: 'build'
+      projects: '**/*.sln'
+      arguments: '--configuration $(buildConfiguration) -p:Version=$(GitVersion.AssemblySemFileVer) --no-restore --verbosity normal'
+
+  - template: ./templates/testcoverage.yml

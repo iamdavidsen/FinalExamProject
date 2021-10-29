@@ -1,0 +1,15 @@
+parameters:
+  - name: sourceFolder
+    type: string
+    default: $(System.DefaultWorkingDirectory)
+  - name: projectFolder
+    type: string
+
+steps:
+  - script: |
+      dotnet tool install dotnet-ef --tool-path $(Agent.TempDirectory)
+    displayName: 'Install dotnet-ef'
+
+  - script: |
+      $(Agent.TempDirectory)/dotnet-ef migrations script --idempotent --output $(Build.ArtifactStagingDirectory)/SQL/migration.sql --project ${{ parameters.sourceFolder }}/${{ parameters.projectFolder }}
+    displayName: '.NET-EF Create Migration Script'

@@ -1,0 +1,13 @@
+parameters:
+  - name: sourceFolder
+    type: string
+    default: $(System.DefaultWorkingDirectory)
+
+steps:
+  - script: |
+      dotnet tool install dotnet-format --tool-path $(Agent.TempDirectory)
+    displayName: 'Install dotnet-format'
+      
+  - script: |
+      $(Agent.TempDirectory)/dotnet-format --folder ${{ parameters.sourceFolder }} -w
+    displayName: '.NET-Format Check Code Style'
