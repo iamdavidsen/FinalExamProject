@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="npm run buildcss" />
+  </Target>
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>aspnet-KDBS-2AC25309-A62D-4150-ADBB-0701EEADA971</UserSecretsId>
