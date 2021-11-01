@@ -8,7 +8,7 @@ namespace KDBS.Data
 {
     public class ApplicationDbContext : IdentityDbContext<UserModel>
     {
-        public DbSet<RecruiterModel> Recruiters { get; set; }
+        public DbSet<CompanyModel> Companies { get; set; }
         public DbSet<JobModel> Jobs { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -19,13 +19,13 @@ namespace KDBS.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Recruiter
-            modelBuilder.Entity<RecruiterModel>().HasKey(r => r.RecruiterId);
-            modelBuilder.Entity<RecruiterModel>().Property(r => r.RecruiterId).ValueGeneratedOnAdd();
-            modelBuilder.Entity<RecruiterModel>()
+            // Company
+            modelBuilder.Entity<CompanyModel>().HasKey(r => r.CompanyId);
+            modelBuilder.Entity<CompanyModel>().Property(r => r.CompanyId).ValueGeneratedOnAdd();
+            modelBuilder.Entity<CompanyModel>()
                 .HasOne(c => c.User)
-                .WithOne(u => u.Recruiter)
-                .HasForeignKey<RecruiterModel>(r => r.UserId)
+                .WithOne(u => u.Company)
+                .HasForeignKey<CompanyModel>(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
@@ -33,9 +33,9 @@ namespace KDBS.Data
             modelBuilder.Entity<JobModel>().HasKey(r => r.JobId);
             modelBuilder.Entity<JobModel>().Property(r => r.JobId).ValueGeneratedOnAdd();
             modelBuilder.Entity<JobModel>()
-                .HasOne(c => c.Recruiter)
+                .HasOne(c => c.Company)
                 .WithMany(u => u.Jobs)
-                .HasForeignKey(j => j.RecruiterId)
+                .HasForeignKey(j => j.CompanyId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
         }

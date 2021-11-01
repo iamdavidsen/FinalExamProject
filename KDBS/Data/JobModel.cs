@@ -19,8 +19,8 @@ namespace KDBS.Data
 
         public DateTime Edited { get; set; }
         
-        public virtual RecruiterModel Recruiter { get; set; }
+        public virtual CompanyModel Company { get; set; }
         
-        public string RecruiterId { get; set; }
+        public string CompanyId { get; set; }
     }
 }

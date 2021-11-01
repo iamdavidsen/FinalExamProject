@@ -15,6 +15,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using KDBS.Services.CompanyService;
+using KDBS.Services.GeocodingService;
+using KDBS.Services.JobService;
+using Newtonsoft.Json.Linq;
 
 namespace KDBS
 {
@@ -35,14 +39,25 @@ namespace KDBS
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             
-            services.AddDefaultIdentity<UserModel>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<UserModel>(o => {
+                    o.SignIn.RequireConfirmedAccount = false;
+                    o.Password.RequireDigit = false;
+                    o.Password.RequireNonAlphanumeric = false;
+                    o.Password.RequireLowercase = false;
+                    o.Password.RequireUppercase = false;
+                    o.Password.RequiredLength = 4;
+                })
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             
             services.AddRazorPages();
             services.AddServerSideBlazor();
             
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<UserModel>>();
-            
+            services.AddScoped<IJobService, JobService>();
+            services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<IGeocodingService, GeocodingService>();
+
             services.AddDatabaseDeveloperPageExceptionFilter();
         }
 

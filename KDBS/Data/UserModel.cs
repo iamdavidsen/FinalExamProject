@@ -5,6 +5,9 @@ namespace KDBS.Data
 {
     public class UserModel : IdentityUser
     {
-        public RecruiterModel? Recruiter { get; set; }
+        public string FirstName { get; set; }
+        
+        public string LastName { get; set; }
+        public CompanyModel? Company { get; set; }
     }
 }

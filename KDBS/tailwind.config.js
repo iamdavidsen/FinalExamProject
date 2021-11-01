@@ -3,6 +3,7 @@ module.exports = {
     enabled: true,
     content: [
       './**/*.html',
+      './**/*.cshtml',
       './**/*.razor'
     ],
   },
@@ -14,6 +15,7 @@ module.exports = {
     extend: {},
   },
   plugins: [
+    require('@tailwindcss/typography'),
     require('daisyui'),
   ],
 }

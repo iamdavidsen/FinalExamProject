@@ -7,7 +7,7 @@ namespace KDBS.Services.JobService
     public interface IJobService {
         Task<List<JobModel>> GetJobs();
         
-        Task<List<JobModel>> GetRecruiterJobs(string recruiterId);
+        Task<List<JobModel>> GetCompanyJobs(string companyId);
 
         Task<JobModel> GetJob(string jobId);
 

@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace KDBS.Data.Migrations
+namespace KDBS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211031110701_AddedModels")]
+    [Migration("20211101121541_AddedModels")]
     partial class AddedModels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,47 +18,12 @@ namespace KDBS.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.9")
+                .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("KDBS.Data.JobModel", b =>
+            modelBuilder.Entity("KDBS.Data.CompanyModel", b =>
                 {
-                    b.Property<string>("JobId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("Added")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Edited")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RecruiterId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("JobId");
-
-                    b.HasIndex("RecruiterId");
-
-                    b.ToTable("Jobs");
-                });
-
-            modelBuilder.Entity("KDBS.Data.RecruiterModel", b =>
-                {
-                    b.Property<string>("RecruiterId")
+                    b.Property<string>("CompanyId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
@@ -70,11 +35,11 @@ namespace KDBS.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Latitude")
-                        .HasColumnType("int");
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
 
-                    b.Property<int>("Longitude")
-                        .HasColumnType("int");
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -87,12 +52,47 @@ namespace KDBS.Data.Migrations
                     b.Property<int>("ZipCode")
                         .HasColumnType("int");
 
-                    b.HasKey("RecruiterId");
+                    b.HasKey("CompanyId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Recruiters");
+                    b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("KDBS.Data.JobModel", b =>
+                {
+                    b.Property<string>("JobId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Added")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CompanyId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Edited")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("JobId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Jobs");
                 });
 
             modelBuilder.Entity("KDBS.Data.UserModel", b =>
@@ -295,26 +295,26 @@ namespace KDBS.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("KDBS.Data.JobModel", b =>
-                {
-                    b.HasOne("KDBS.Data.RecruiterModel", "Recruiter")
-                        .WithMany("Jobs")
-                        .HasForeignKey("RecruiterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Recruiter");
-                });
-
-            modelBuilder.Entity("KDBS.Data.RecruiterModel", b =>
+            modelBuilder.Entity("KDBS.Data.CompanyModel", b =>
                 {
                     b.HasOne("KDBS.Data.UserModel", "User")
-                        .WithOne("Recruiter")
-                        .HasForeignKey("KDBS.Data.RecruiterModel", "UserId")
+                        .WithOne("Company")
+                        .HasForeignKey("KDBS.Data.CompanyModel", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("KDBS.Data.JobModel", b =>
+                {
+                    b.HasOne("KDBS.Data.CompanyModel", "Company")
+                        .WithMany("Jobs")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -368,14 +368,14 @@ namespace KDBS.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("KDBS.Data.RecruiterModel", b =>
+            modelBuilder.Entity("KDBS.Data.CompanyModel", b =>
                 {
                     b.Navigation("Jobs");
                 });
 
             modelBuilder.Entity("KDBS.Data.UserModel", b =>
                 {
-                    b.Navigation("Recruiter");
+                    b.Navigation("Company");
                 });
 #pragma warning restore 612, 618
         }

@@ -19,9 +19,9 @@ namespace KDBS.Services.JobService {
             return _dbContext.Jobs.ToListAsync();
         }
         
-        public Task<List<JobModel>> GetRecruiterJobs(string recruiterId)
+        public Task<List<JobModel>> GetCompanyJobs(string companyId)
         {
-            return _dbContext.Jobs.Where(j => j.RecruiterId == recruiterId).ToListAsync();
+            return _dbContext.Jobs.Where(j => j.CompanyId == companyId).ToListAsync();
         }
 
         public async Task<JobModel> GetJob(string jobId)

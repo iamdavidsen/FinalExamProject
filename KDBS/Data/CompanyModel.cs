@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KDBS.Data
 {
-    public class RecruiterModel
+    public class CompanyModel
     {
-        public string RecruiterId { get; set; }
+        public string CompanyId { get; set; }
 
         public string Name { get; set; }
 
@@ -16,9 +16,9 @@ namespace KDBS.Data
 
         public string Address { get; set; }
 
-        public int Latitude { get; set; }
+        public double Latitude { get; set; }
 
-        public int Longitude { get; set; }
+        public double Longitude { get; set; }
         
         public virtual UserModel User { get; set; }
         
