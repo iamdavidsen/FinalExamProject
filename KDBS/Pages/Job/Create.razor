@@ -1,0 +1,55 @@
+﻿@page "/job/create"
+@attribute [Authorize]
+
+@using KDBS.Data
+@using KDBS.Models
+@using KDBS.Services.JobService
+@using KDBS.Services.CompanyService
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+
+@inject IJobService _db
+@inject ICompanyService _companyDb
+@inject IHttpContextAccessor _context
+@inject UserManager<UserModel> _userManager
+
+<h1>Create job page</h1>
+
+<EditForm Model="@newJob" OnValidSubmit="@OnCreateJob">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="card flex-shrink-0 w-full shadow-2xl bg-base-100">
+        <div class="card-body">
+            <div class="flex gap-x">
+                <InputText id="title" class="input input-bordered" @bind-Value="newJob.Title" />
+                <InputText id="content" class="input input-bordered" @bind-Value="newJob.Content" />
+            </div>
+            <div class="form-control mt-6">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private Job newJob = new Job();
+    private UserModel user = new UserModel();
+
+    private async Task OnCreateJob()
+    {
+        user = await _userManager.GetUserAsync(_context?.HttpContext?.User);
+        user.Company = await _companyDb.GetCompanyByUser(user.Id);
+
+        JobModel job = new JobModel()
+            {
+                Title = newJob.Title,
+                Content = newJob.Content,
+                Added = DateTime.Now,
+                Edited = DateTime.Now,
+                CompanyId = user.Company.CompanyId
+            };
+        await _db.CreateJob(job);
+        newJob = new Job();
+    }
+}

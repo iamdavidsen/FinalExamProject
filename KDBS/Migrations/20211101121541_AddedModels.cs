@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace KDBS.Migrations
 {
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public partial class AddedModels : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

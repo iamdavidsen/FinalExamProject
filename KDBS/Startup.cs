@@ -1,4 +1,4 @@
-using KDBS.Areas.Identity;
+﻿using KDBS.Areas.Identity;
 using KDBS.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
@@ -52,6 +52,7 @@ namespace KDBS
             
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddHttpContextAccessor();
             
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<UserModel>>();
             services.AddScoped<IJobService, JobService>();
