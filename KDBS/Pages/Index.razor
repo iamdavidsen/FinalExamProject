@@ -1,7 +1,10 @@
 ﻿@page "/"
 @using Microsoft.Extensions.Configuration
+@using KDBS.Services.JobService
+@using KDBS.Models
 @inject IJSRuntime JS
 @inject IConfiguration Configuration
+@inject IJobService JobService
 
 <div id="map" class="w-full, h-full"></div>
 
@@ -12,12 +15,22 @@
         {
             var key = Configuration.GetValue<string>("BingMaps");
             await JS.InvokeVoidAsync("loadBingMap", key);
+            await LoadPins();
         }
-        
+
         [JSInvokable]
         void ClickedOnPin()
         {
             
+        }
+
+        async Task LoadPins()
+        {
+            var jobs = await JobService.GetJobs();
+
+            var pins = jobs.Select(j => new Coordinate(j.Company.Latitude, j.Company.Longitude)).ToList();
+            
+            await JS.InvokeVoidAsync("addPins", pins);
         }
     }
 }

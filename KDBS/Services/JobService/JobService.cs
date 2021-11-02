@@ -5,8 +5,10 @@ using KDBS.Data;
 using KDBS.Models.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
-namespace KDBS.Services.JobService {
-    public class JobService : IJobService {
+namespace KDBS.Services.JobService
+{
+    public class JobService : IJobService
+    {
         private readonly ApplicationDbContext _dbContext;
 
         public JobService(ApplicationDbContext dbContext)
@@ -16,9 +18,11 @@ namespace KDBS.Services.JobService {
 
         public Task<List<JobModel>> GetJobs()
         {
-            return _dbContext.Jobs.ToListAsync();
+            return _dbContext.Jobs
+                .Include(j => j.Company)
+                .ToListAsync();
         }
-        
+
         public Task<List<JobModel>> GetCompanyJobs(string companyId)
         {
             return _dbContext.Jobs.Where(j => j.CompanyId == companyId).ToListAsync();

@@ -11,8 +11,8 @@
 }
 
 function addPins(coordinates) {
-    window.map.entities.deleteAllShapes()
-   
+    removeAllPins()
+    
     for (var i = 0; i < coordinates.length; i++) {
         var coordinate = coordinates[i];
         
@@ -21,4 +21,10 @@ function addPins(coordinates) {
     }
     
     return "";
+}
+
+function removeAllPins() {
+    for (var i = 0; i < window.map.entities.length; i++) {
+        window.map.entities.removeAt(0)
+    }
 }
