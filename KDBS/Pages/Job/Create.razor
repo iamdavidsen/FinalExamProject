@@ -10,7 +10,7 @@
 
 @inject IJobService _db
 @inject ICompanyService _companyDb
-@inject IHttpContextAccessor _context
+@inject AuthenticationStateProvider _authenticationStateProvider
 @inject UserManager<UserModel> _userManager
 
 <h1>Create job page</h1>
@@ -38,7 +38,10 @@
 
     private async Task OnCreateJob()
     {
-        user = await _userManager.GetUserAsync(_context?.HttpContext?.User);
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var claim = authState.User;
+        
+        user = await _userManager.GetUserAsync(claim);
         user.Company = await _companyDb.GetCompanyByUser(user.Id);
 
         JobModel job = new JobModel()
