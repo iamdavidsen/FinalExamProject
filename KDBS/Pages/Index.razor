@@ -2,35 +2,149 @@
 @using Microsoft.Extensions.Configuration
 @using KDBS.Services.JobService
 @using KDBS.Models
-@inject IJSRuntime JS
-@inject IConfiguration Configuration
-@inject IJobService JobService
+@using KDBS.Models.Events
+@using KDBS.Data
+@implements IDisposable
+@inject IJSRuntime _js
+@inject IConfiguration _configuration
+@inject IJobService _jobService
 
-<div id="map" class="w-full, h-full"></div>
+<div class="w-full, h-full overflow-hidden relative">
+    <div id="map" class="w-full, h-full"></div>
+    <div class="absolute job-popup card shadow-2xl bg-base-100" style="@_overlayStyle">
+        <div class="card-body">
+            <h2 class="card-title">@_selectedJob?.Title</h2>
+            <p>@_selectedJob?.Content</p>
+            <button class="btn btn-primary">Læs mere</button>
+            <div class="card-actions">
+                <div class="btn-group" hidden="@HasNavigation">
+                    <button @onclick="@Previous" class="btn btn-sm btn-outline">Forrige Job</button>
+                    <button @onclick="@Next" class="btn btn-sm btn-outline">Næste Job</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
+    private bool HasNavigation => !(_currentPin != null && _currentPin.Jobs.Count > 1);
+
+    private DotNetObjectReference<Index>? _objectReference = null;
+    private List<PreviewPoint> _previewPoints = new List<PreviewPoint>();
+
+    private string _overlayStyle = "display: none;";
+
+    private int _currentPreviewIndex = 0;
+    private PreviewPoint? _currentPin = null;
+
+    private JobModel? _selectedJob = null;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            var key = Configuration.GetValue<string>("BingMaps");
-            await JS.InvokeVoidAsync("loadBingMap", key);
+            var key = _configuration.GetValue<string>("BingMaps");
+            _objectReference = DotNetObjectReference.Create(this);
+
+            await _js.InvokeVoidAsync("loadBingMap", key, _objectReference);
             await LoadPins();
         }
+    }
 
-        [JSInvokable]
-        void ClickedOnPin()
+    [JSInvokable] public async Task ClickedOnPin(PinClickEvent pinClickEvent)
+    {
+        var previewPoint = _previewPoints.FirstOrDefault(p => p.Id == pinClickEvent.Id);
+
+        if (previewPoint == null)
         {
-            
+            return;
         }
 
-        async Task LoadPins()
-        {
-            var jobs = await JobService.GetJobs();
+        _currentPreviewIndex = 0;
+        _currentPin = previewPoint;
 
-            var pins = jobs.Select(j => new Coordinate(j.Company.Latitude, j.Company.Longitude)).ToList();
-            
-            await JS.InvokeVoidAsync("addPins", pins);
+        await LoadCurrentJob();
+
+        _overlayStyle = $"left: {pinClickEvent.PageX}px; top: {pinClickEvent.PageY}px";
+        StateHasChanged();
+    }
+
+    [JSInvokable] public void HidePopup()
+    {
+        _overlayStyle = "display: none;";
+        StateHasChanged();
+    }
+
+    private async Task LoadPins()
+    {
+        var jobs = await _jobService.GetJobs();
+
+        var pins = jobs
+            .GroupBy(j => $@"{j.Company.Latitude}{j.Company.Longitude}")
+            .Select(j => new PreviewPoint()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Latitude = j.First().Company.Latitude,
+                Longitude = j.First().Company.Longitude,
+                Jobs = j.Select(job => job.JobId).ToList()
+            }).ToList();
+
+        _previewPoints = pins;
+        await _js.InvokeVoidAsync("addPins", pins);
+    }
+
+    private async Task LoadCurrentJob()
+    {
+        var jobId = _currentPin?.Jobs[_currentPreviewIndex];
+
+        if (jobId == null)
+        {
+            HidePopup();
+            return;
+        }
+
+        JobModel? job = null;
+        try
+        {
+            job = await _jobService.GetJob(jobId);
+        }
+        catch (Exception e)
+        {
+            HidePopup();
+            return;
+        }
+
+        _selectedJob = job;
+    }
+
+    private async Task Next()
+    {
+        if (_currentPin == null) return;
+
+        var nextIndex = _currentPreviewIndex + 1;
+        if (_currentPin.Jobs.Count == nextIndex) nextIndex = 0;
+
+        _currentPreviewIndex = nextIndex;
+        await LoadCurrentJob();
+    }
+
+    private async Task Previous()
+    {
+        if (_currentPin == null) return;
+
+        var nextIndex = _currentPreviewIndex - 1;
+        if (nextIndex < 0) nextIndex = _currentPin.Jobs.Count - 1;
+
+        _currentPreviewIndex = nextIndex;
+        await LoadCurrentJob();
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+        if (_objectReference != null)
+        {
+            _objectReference.Dispose();
         }
     }
 }

@@ -747,6 +747,11 @@ html {
   }
 }
 
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .card {
   display: flex;
   flex-direction: column;
@@ -769,6 +774,18 @@ html {
 
 .card figure,.card figure>* {
   width: 100%;
+}
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-left: -.25rem;
+  margin-right: -.25rem;
+}
+
+.card-actions>* {
+  margin: .25rem;
 }
 
 .checkbox:focus {
@@ -1055,6 +1072,47 @@ html {
   box-shadow: 0 0 0 2px currentColor;
 }
 
+.btn-outline {
+  background-color: transparent;
+  border-color: currentColor;
+  --tw-text-opacity: 1;
+  color: hsla(var(--bc)/var(--tw-text-opacity,1));
+}
+
+.btn-outline:hover {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--bc)/var(--tw-bg-opacity,1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--bc)/var(--tw-border-opacity,1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--b1)/var(--tw-text-opacity,1));
+}
+
+.btn-outline.btn-primary {
+  --tw-text-opacity: 1;
+  color: hsla(var(--p)/var(--tw-text-opacity,1));
+}
+
+.btn-outline.btn-primary:hover {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--pf)/var(--tw-bg-opacity,1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--pf)/var(--tw-border-opacity,1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--pc)/var(--tw-text-opacity,1));
+}
+
+.btn-group>.btn:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: -1px;
+}
+
+.btn-group>.btn:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
 @-webkit-keyframes button-pop {
   to {
     transform: scale(1);
@@ -1077,6 +1135,21 @@ html {
 
 .card:focus-visible {
   box-shadow: 0 0 0 2px currentColor;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  margin-bottom: .75rem;
+}
+
+.card-actions:first-child {
+  margin-bottom: .5rem;
+}
+
+.card-actions:last-child {
+  margin-top: 1.5rem;
 }
 
 .checkbox {
@@ -1273,6 +1346,14 @@ html {
   font-size: .875rem;
 }
 
+.absolute {
+  position: absolute;
+}
+
+.relative {
+  position: relative;
+}
+
 .mx-2 {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
@@ -1423,6 +1504,10 @@ html {
        column-gap: 1.5rem;
 }
 
+.overflow-hidden {
+  overflow: hidden;
+}
+
 .bg-base-100 {
   --tw-bg-opacity: 1;
   background-color: hsla(var(--b1) / var(--tw-bg-opacity));
@@ -1514,6 +1599,10 @@ html {
   background-color: hsla(var(--er)/var(--tw-bg-opacity,1));
   --tw-text-opacity: 1;
   color: hsla(var(--er)/var(--tw-text-opacity,1));
+}
+
+.job-popup {
+  transform: translate(-50%, calc(-100% - 1.5rem));
 }
 
 @media (min-width: 640px) {
