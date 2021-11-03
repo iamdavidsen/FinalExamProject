@@ -9,7 +9,12 @@ namespace KDBS.Data
     public class ApplicationDbContext : IdentityDbContext<UserModel>
     {
         public DbSet<CompanyModel> Companies { get; set; }
+        
+        public DbSet<CategoryModel> Categories { get; set; }
+        
         public DbSet<JobModel> Jobs { get; set; }
+        
+        public DbSet<GoodsModel> Goods { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -28,6 +33,10 @@ namespace KDBS.Data
                 .HasForeignKey<CompanyModel>(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
+            
+            // Category
+            modelBuilder.Entity<CategoryModel>().HasKey(r => r.CategoryId);
+            modelBuilder.Entity<CategoryModel>().Property(r => r.CategoryId).ValueGeneratedOnAdd();
 
             // Job
             modelBuilder.Entity<JobModel>().HasKey(r => r.JobId);
@@ -38,6 +47,19 @@ namespace KDBS.Data
                 .HasForeignKey(j => j.CompanyId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
+            modelBuilder.Entity<JobModel>()
+                .HasOne(j => j.Category)
+                .WithMany(c => c.Jobs)
+                .HasForeignKey(j => j.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Goods
+            modelBuilder.Entity<GoodsModel>().HasKey(r => r.GoodsId);
+            modelBuilder.Entity<GoodsModel>().Property(r => r.GoodsId).ValueGeneratedOnAdd();
+            modelBuilder.Entity<GoodsModel>()
+                .HasMany(c => c.Jobs)
+                .WithMany(j => j.Goods)
+                .UsingEntity(j => j.ToTable("JobGoods"));
         }
     }
 }

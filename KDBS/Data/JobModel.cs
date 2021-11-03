@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Components;
@@ -22,5 +23,11 @@ namespace KDBS.Data
         public virtual CompanyModel Company { get; set; }
         
         public string CompanyId { get; set; }
+        
+        public virtual CategoryModel? Category { get; set; }
+        
+        public string? CategoryId { get; set; }
+        
+        public virtual List<GoodsModel> Goods { get; set; }
     }
 }

@@ -15,8 +15,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using KDBS.Services.CategoryService;
 using KDBS.Services.CompanyService;
 using KDBS.Services.GeocodingService;
+using KDBS.Services.GoodsService;
 using KDBS.Services.JobService;
 using Newtonsoft.Json.Linq;
 
@@ -55,8 +57,10 @@ namespace KDBS
             services.AddHttpContextAccessor();
             
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<UserModel>>();
-            services.AddScoped<IJobService, JobService>();
             services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IJobService, JobService>();
+            services.AddScoped<IGoodsService, GoodsService>();
             services.AddScoped<IGeocodingService, GeocodingService>();
 
             services.AddDatabaseDeveloperPageExceptionFilter();

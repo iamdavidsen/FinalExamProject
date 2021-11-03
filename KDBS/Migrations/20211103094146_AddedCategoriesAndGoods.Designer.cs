@@ -4,14 +4,16 @@ using KDBS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace KDBS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211103094146_AddedCategoriesAndGoods")]
+    partial class AddedCategoriesAndGoods
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +48,7 @@ namespace KDBS.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("CategoryModel");
                 });
 
             modelBuilder.Entity("KDBS.Data.CompanyModel", b =>
@@ -100,7 +102,7 @@ namespace KDBS.Migrations
 
                     b.HasKey("GoodsId");
 
-                    b.ToTable("Goods");
+                    b.ToTable("GoodsModel");
                 });
 
             modelBuilder.Entity("KDBS.Data.JobModel", b =>
