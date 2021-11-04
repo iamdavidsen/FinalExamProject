@@ -43,7 +43,7 @@
                             <td>@item.Edited</td>
                             <td></td>
                             <td>
-                                <NavLink href="/job/rediger" class="btn btn-ghost btn-sm rounded-btn">Rediger</NavLink>
+                                <NavLink href="@("/job/edit/" + @item.JobId)" class="btn btn-ghost btn-sm rounded-btn">Rediger</NavLink>
                                 <button @onclick="@(e => OnDeleteJob(@item.JobId))" class="btn btn-ghost btn-sm rounded-btn">Slet</button>
                             </td>
                         </tr>

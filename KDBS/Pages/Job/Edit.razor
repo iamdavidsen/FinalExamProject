@@ -1,4 +1,5 @@
-﻿@page "/job/details/{jobid}"
+﻿@page "/job/edit/{jobid}"
+@attribute [Authorize]
 
 @using KDBS.Data
 @using KDBS.Models
@@ -20,52 +21,59 @@
 
 <div class="w-full h-full flex justify-center items-center">
     <div class="w-full max-w-2xl">
-        <h1 class="text-3xl font-bold mb-6">@job.JobTitle</h1>
+        <h1 class="text-3xl font-bold mb-6">Edit job opslag for id: @jobModel?.Title</h1>
         <div class="card flex-shrink-0 w-full shadow-2xl bg-base-100">
             <div class="card-body">
-                <label class="form-control">
-                    <p class="label label-text">
-                        @job.JobTitle
-                    </p>
-                </label>
-                <label class="form-control">
-                    <p class="label label-text">
-                        @jobModel?.Company?.Name
-                    </p>
-                </label>
-                <label class="form-control">
-                    <p class="label label-text">
-                        Løn: @job.Salary
-                    </p>
-                </label>
-                <label class="form-control">
-                    <p class="label label-text">
-                        Goder:
+
+                <EditForm Model="@job" OnValidSubmit="@OnCreateJob">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <label class="form-control">
+                        <p class="label label-text">
+                            Title
+                        </p>
+                        <InputText id="title" class="input input-bordered" @bind-Value="job.JobTitle" />
+                    </label>
+                    <label class="form-control">
+                        <p class="label label-text">
+                            Løn
+                        </p>
+                        <InputNumber id="salary" class="input input-bordered" @bind-Value="job.Salary" />
+                    </label>
+                    <label class="form-control">
+                        <p class="label label-text">
+                            Goder
+                        </p>
                         @foreach (var good in job.Goods ?? new List<Goods>())
                         {
-                            @if (good.IsSelected)
+                            <p>
+                                @good.Title:
+                            </p>
+                            <InputCheckbox id="@good.GoodsId" class="" @bind-Value="@good.IsSelected" />
+                        }
+                    </label>
+                    <label class="form-control">
+                        <p class="label label-text">
+                            Kategorier
+                        </p>
+                        <InputSelect id="category" class="input input-bordered" @bind-Value="@job.CategoryId">
+                            @foreach (var category in job.Categories ?? new List<Category>())
                             {
-                                @good.Title
+                                <option value="@category.CategoryId">@category.Title</option>
                             }
-                        }
-                    </p>
-                </label>
-                <label class="form-control">
-                    <p class="label label-text">
-                        Kategori:
-                        @foreach (var category in job.Categories ?? new List<Category>())
-                        {
-                            @if (jobModel.CategoryId == category.CategoryId)
-                                @category.Title
-                        }
-                    </p>
-                </label>
-                <label class="form-control">
-                    <p class="label label-text">
-                        Beskrivelse:
-                        @job.JobContent
-                    </p>
-                </label>
+                        </InputSelect>
+                    </label>
+                    <label class="form-control">
+                        <p class="label label-text">
+                            Beskrivelse
+                        </p>
+                        <InputTextArea id="mytextarea" class="input input-bordered" @bind-Value="job.JobContent" />
+                    </label>
+                    <div class="form-control mt-6">
+                        <button type="submit" class="btn btn-primary">Opdater</button>
+                    </div>
+                </EditForm>
             </div>
         </div>
     </div>
@@ -108,7 +116,7 @@
                 CategoryId = c.CategoryId,
                 Title = c.Title
             }).ToList();
-
+       
     }
 
     private async Task OnCreateJob()

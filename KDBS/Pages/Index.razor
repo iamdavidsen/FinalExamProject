@@ -16,7 +16,7 @@
         <div class="card-body">
             <h2 class="card-title">@_selectedJob?.Title</h2>
             <p>@_selectedJob?.Content</p>
-            <button class="btn btn-primary">Læs mere</button>
+            <NavLink href="@("/job/details/" + @_selectedJob?.JobId)" class="btn btn-primary">Læs mere</NavLink>
             <div class="card-actions">
                 <div class="btn-group" hidden="@HasNavigation">
                     <button @onclick="@Previous" class="btn btn-sm btn-outline">Forrige Job</button>

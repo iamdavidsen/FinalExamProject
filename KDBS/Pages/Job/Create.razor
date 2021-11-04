@@ -17,6 +17,7 @@
 @inject ICategoryService _categoryDb
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject UserManager<UserModel> _userManager
+@inject NavigationManager NavManager
 
 <div class="w-full h-full flex justify-center items-center">
     <div class="w-full max-w-2xl">
@@ -119,9 +120,6 @@
             };
 
         await _jobDb.CreateJob(j);
-        job = new Job();
-        //job.Goods.Select(i => i.IsSelected = false);
-        job.Goods = (await _goodsDb.GetGoods()).Select(g => new Goods() { GoodsId = g.GoodsId, Title = g.Title, IsSelected = false }).ToList();
-        job.Categories = (await _categoryDb.GetCategories()).Select(c => new Category() { CategoryId = c.CategoryId, Title = c.Title }).ToList();
+        NavManager.NavigateTo("/job");
     }
 }

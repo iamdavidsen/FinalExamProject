@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KDBS.Data;
@@ -48,7 +48,7 @@ namespace KDBS.Services.JobService
 
         public async Task<JobModel> GetJob(string jobId)
         {
-            var job = await _dbContext.Jobs.Where(j => j.JobId == jobId).FirstOrDefaultAsync();
+            var job = await _dbContext.Jobs.Where(j => j.JobId == jobId).Include(j => j.Goods).FirstOrDefaultAsync();
 
             if (job == null) throw new ObjectNotFoundException("The job does not exist");
 
