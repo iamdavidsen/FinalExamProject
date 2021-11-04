@@ -1,12 +1,12 @@
 ﻿function loadBingMap(key, dotnetRef) {
     var map = new Microsoft.Maps.Map('#map', {
         credentials: key,
-        mapTypeId: Microsoft.Maps.MapTypeId.aerial,
         zoom: 10
     });
 
     window.map = map;
     window.dotnetRef = dotnetRef;
+    window.pins = []
 
     Microsoft.Maps.Events.addHandler(map, 'click', function () {
         window.dotnetRef && window.dotnetRef.invokeMethodAsync('HidePopup');
@@ -29,6 +29,7 @@ function addPins(pins) {
         var pushpin = new Microsoft.Maps.Pushpin(coordinate, null);
         Microsoft.Maps.Events.addHandler(pushpin, 'click', onClickFactory(pin.id));
         
+        window.pins.push(pushpin)
         window.map.entities.push(pushpin);
     }
 
@@ -43,9 +44,12 @@ function initTextField() {
 }
 
 function removeAllPins() {
-    for (var i = 0; i < window.map.entities.length; i++) {
-        window.map.entities.removeAt(0)
+    for (var i = 0; i < window.pins.length; i++) {
+        var pin = window.pins[i]
+        window.map.entities.remove(pin);
     }
+    
+    window.pins = []
 }
 
 function onClickFactory(id) {

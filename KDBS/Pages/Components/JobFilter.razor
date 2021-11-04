@@ -1,0 +1,84 @@
+﻿@using KDBS.Models
+@using KDBS.Models.Events
+@using KDBS.Services.CategoryService
+@using KDBS.Services.GoodsService
+@using Microsoft.AspNetCore.Components
+@using System.Globalization
+@inject IGoodsService _goodsService;
+@inject ICategoryService _categoryService;
+
+<div class="p-4 flex justify-center gap-x-2 max-w-3xl mx-auto">
+    <input type="text" id="title" placeholder="Søg" class="input input-bordered flex-grow" @bind="SearchQuery" @bind:event="oninput"/>
+    <div class="dropdown flex-grow">
+        <div tabindex="0" class="btn btn-block">Løn</div>
+        <div tabindex="0" class="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52">
+            <label class="cursor-pointer">
+                <p class="label label-text">@(Salary.ToString("C", new CultureInfo("da-DK")))</p>
+                <input class="range" type="range" min="0" max="100000" step="1000" @bind="@Salary" @bind:event="oninput" @onchange="FilterChanged"/>
+            </label>
+        </div>
+    </div>
+    <div class="dropdown flex-grow">
+        <div tabindex="0" class="btn btn-block">Fagområder</div>
+        <ul tabindex="0" class="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52">
+            @foreach (var checkbox in Categories)
+            {
+                <li>
+                    <label class="cursor-pointer label label-text">
+                        <p>@checkbox.Title</p>
+                        <input type="checkbox" id="@checkbox.Id" class="checkbox" @bind="@checkbox.Selected" @bind:event="oninput" @onchange="FilterChanged"/>
+                    </label>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="dropdown flex-grow">
+        <div tabindex="0" class="btn btn-block">Goder</div>
+        <ul tabindex="0" class="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52">
+            @foreach (var checkbox in Goods)
+            {
+                <li>
+                    <label class="cursor-pointer label label-text">
+                        <p>@checkbox.Title</p>
+                        <input type="checkbox" id="@checkbox.Id" class="checkbox" @bind="@checkbox.Selected" @bind:event="oninput" @onchange="FilterChanged"/>
+                    </label>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback<FilterChangedEvent> OnFilterChanged { get; set; }
+
+    private string SearchQuery
+    {
+        get => _searchQuery;
+        set {
+            _searchQuery = value;
+            FilterChanged();
+        }
+    }
+
+    private string _searchQuery = "";
+
+    private int Salary { get; set; } = 0;
+    private List<CheckboxOption> Categories = new();
+    private List<CheckboxOption> Goods = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categories = (await _categoryService.GetCategories()).Select(g => new CheckboxOption(g.CategoryId, g.Title, false)).ToList();
+        Goods = (await _goodsService.GetGoods()).Select(g => new CheckboxOption(g.GoodsId, g.Title, false)).ToList();
+    }
+
+    private void FilterChanged()
+    {
+        var categories = Categories.Where(c => c.Selected).Select(c => c.Id).ToList();
+        var goods = Goods.Where(g => g.Selected).Select(g => g.Id).ToList();
+
+        OnFilterChanged.InvokeAsync(new FilterChangedEvent(SearchQuery, Salary, categories, goods));
+    }
+}

@@ -10,6 +10,7 @@
 @inject IJobService _jobService
 
 <div class="w-full, h-full overflow-hidden relative">
+    <JobFilter OnFilterChanged="OnFilterChanged"></JobFilter>
     <div id="map" class="w-full, h-full"></div>
     <div class="absolute job-popup card shadow-2xl bg-base-100" style="@_overlayStyle">
         <div class="card-body">
@@ -75,9 +76,14 @@
         StateHasChanged();
     }
 
-    private async Task LoadPins()
+    private async Task OnFilterChanged(FilterChangedEvent changedEvent)
     {
-        var jobs = await _jobService.GetJobs();
+        await LoadPins(changedEvent.SearchQuery, changedEvent.Salary, changedEvent.Categories, changedEvent.Goods);
+    }
+
+    private async Task LoadPins(string? searchQuery = null, int? salary = null, List<string>? categories = null, List<string>? goods = null)
+    {
+        var jobs = await _jobService.GetJobs(searchQuery, salary, categories, goods);
 
         var pins = jobs
             .GroupBy(j => $@"{j.Company.Latitude}{j.Company.Longitude}")
