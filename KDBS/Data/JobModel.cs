@@ -15,6 +15,7 @@ namespace KDBS.Data
         public string Title { get; set; }
 
         public string Content { get; set; }
+        public int Salary { get; set; }
 
         public DateTime Added { get; set; }
 

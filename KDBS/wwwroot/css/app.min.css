@@ -1399,6 +1399,10 @@ html {
   max-width: 36rem;
 }
 
+.max-w-2xl {
+  max-width: 42rem;
+}
+
 .flex-1 {
   flex: 1 1 0%;
 }

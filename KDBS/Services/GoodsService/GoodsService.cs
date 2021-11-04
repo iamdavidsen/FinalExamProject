@@ -17,6 +17,11 @@ namespace KDBS.Services.GoodsService {
         {
             return _dbContext.Goods.ToListAsync();
         }
+
+        public Task<List<GoodsModel>> GetGoods(List<string> goodsIds)
+        {
+            return _dbContext.Goods.Where(g => goodsIds.Contains(g.GoodsId)).ToListAsync();
+        }
         
         public Task<GoodsModel> GetGoods(string goodsId)
         {

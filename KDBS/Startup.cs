@@ -40,22 +40,23 @@ namespace KDBS
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            
-            services.AddDefaultIdentity<UserModel>(o => {
-                    o.SignIn.RequireConfirmedAccount = false;
-                    o.Password.RequireDigit = false;
-                    o.Password.RequireNonAlphanumeric = false;
-                    o.Password.RequireLowercase = false;
-                    o.Password.RequireUppercase = false;
-                    o.Password.RequiredLength = 4;
-                })
+
+            services.AddDefaultIdentity<UserModel>(o =>
+            {
+                o.SignIn.RequireConfirmedAccount = false;
+                o.Password.RequireDigit = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequiredLength = 4;
+            })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddHttpContextAccessor();
-            
+
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<UserModel>>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ICategoryService, CategoryService>();

@@ -8,6 +8,7 @@ namespace KDBS.Services.GoodsService
         Task<List<GoodsModel>> GetGoods();
         
         Task<GoodsModel> GetGoods(string goodsId);
+        Task<List<GoodsModel>> GetGoods(List<string> goodsIds);
 
         Task CreateGoods(GoodsModel jobModel);
 

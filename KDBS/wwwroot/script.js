@@ -4,7 +4,7 @@
         mapTypeId: Microsoft.Maps.MapTypeId.aerial,
         zoom: 10
     });
-    
+
     window.map = map;
     window.dotnetRef = dotnetRef;
 
@@ -31,8 +31,15 @@ function addPins(pins) {
         
         window.map.entities.push(pushpin);
     }
-    
+
     return "";
+}
+
+
+function initTextField() {
+    tinymce.init({
+        selector: '#mytextarea'
+    });
 }
 
 function removeAllPins() {

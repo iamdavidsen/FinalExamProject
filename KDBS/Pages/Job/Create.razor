@@ -3,56 +3,125 @@
 
 @using KDBS.Data
 @using KDBS.Models
+@using KDBS.Services.CategoryService
 @using KDBS.Services.JobService
 @using KDBS.Services.CompanyService
+@using KDBS.Services.GoodsService
 @using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Identity
 
-@inject IJobService _db
+@inject IJSRuntime JS
+@inject IJobService _jobDb
 @inject ICompanyService _companyDb
+@inject IGoodsService _goodsDb
+@inject ICategoryService _categoryDb
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject UserManager<UserModel> _userManager
 
-<h1>Create job page</h1>
+<div class="w-full h-full flex justify-center items-center">
+    <div class="w-full max-w-2xl">
+        <h1 class="text-3xl font-bold mb-6">Opret job opslag</h1>
+        <div class="card flex-shrink-0 w-full shadow-2xl bg-base-100">
+            <div class="card-body">
 
-<EditForm Model="@newJob" OnValidSubmit="@OnCreateJob">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+                <EditForm Model="@job" OnValidSubmit="@OnCreateJob">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
 
-    <div class="card flex-shrink-0 w-full shadow-2xl bg-base-100">
-        <div class="card-body">
-            <div class="flex gap-x">
-                <InputText id="title" class="input input-bordered" @bind-Value="newJob.Title" />
-                <InputText id="content" class="input input-bordered" @bind-Value="newJob.Content" />
-            </div>
-            <div class="form-control mt-6">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                    <label class="form-control">
+                        <p class="label label-text">
+                            Title
+                        </p>
+                        <InputText id="title" class="input input-bordered" @bind-Value="job.JobTitle" />
+                    </label>
+                    <label class="form-control">
+                        <p class="label label-text">
+                            Løn
+                        </p>
+                        <InputNumber id="salary" class="input input-bordered" @bind-Value="job.Salary" />
+                    </label>
+                    <label class="form-control">
+                        <p class="label label-text">
+                            Goder
+                        </p>
+                        @foreach (var good in job.Goods ?? new List<Goods>())
+                        {
+                            <p>
+                                @good.Title:
+                            </p>
+                            <InputCheckbox id="@good.GoodsId" class="" @bind-Value="@good.IsSelected" />
+                        }
+                    </label>
+                    <label class="form-control">
+                        <p class="label label-text">
+                            Kategorier
+                        </p>
+                        <InputSelect id="category" class="input input-bordered" @bind-Value="@job.CategoryId">
+                            @foreach (var category in job.Categories ?? new List<Category>())
+                            {
+                                <option value="@category.CategoryId">@category.Title</option>
+                            }
+                        </InputSelect>
+                    </label>
+                    <label class="form-control">
+                        <p class="label label-text">
+                            Beskrivelse
+                        </p>
+                        <InputTextArea id="mytextarea" class="input input-bordered" @bind-Value="job.JobContent" />
+                    </label>
+                    <div class="form-control mt-6">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </EditForm>
             </div>
         </div>
     </div>
-</EditForm>
+</div>
 
 @code {
-    private Job newJob = new Job();
+    private Job job = new Job();
     private UserModel user = new UserModel();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("initTextField");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        job.Goods = (await _goodsDb.GetGoods()).Select(g => new Goods() { GoodsId = g.GoodsId, Title = g.Title, IsSelected = false }).ToList();
+        job.Categories = (await _categoryDb.GetCategories()).Select(c => new Category() { CategoryId = c.CategoryId, Title = c.Title }).ToList();
+    }
 
     private async Task OnCreateJob()
     {
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var claim = authState.User;
-        
+
         user = await _userManager.GetUserAsync(claim);
         user.Company = await _companyDb.GetCompanyByUser(user.Id);
 
-        JobModel job = new JobModel()
+        var selectedGoods = await _goodsDb.GetGoods(job.Goods.Where(g => g.IsSelected).Select(r => r.GoodsId).ToList());
+
+        JobModel j = new JobModel()
             {
-                Title = newJob.Title,
-                Content = newJob.Content,
+                Title = job.JobTitle,
+                Salary = job.Salary,
+                Content = job.JobContent ?? "This should be filled",
                 Added = DateTime.Now,
                 Edited = DateTime.Now,
-                CompanyId = user.Company.CompanyId
+                CompanyId = user.Company.CompanyId,
+                CategoryId = job.CategoryId,
+                Goods = selectedGoods
             };
-        await _db.CreateJob(job);
-        newJob = new Job();
+
+        await _jobDb.CreateJob(j);
+        job = new Job();
+        //job.Goods.Select(i => i.IsSelected = false);
+        job.Goods = (await _goodsDb.GetGoods()).Select(g => new Goods() { GoodsId = g.GoodsId, Title = g.Title, IsSelected = false }).ToList();
+        job.Categories = (await _categoryDb.GetCategories()).Select(c => new Category() { CategoryId = c.CategoryId, Title = c.Title }).ToList();
     }
 }

@@ -1,0 +1,78 @@
+﻿@page "/job"
+@attribute [Authorize]
+
+@using KDBS.Data
+@using KDBS.Models
+@using KDBS.Services.CategoryService
+@using KDBS.Services.JobService
+@using KDBS.Services.CompanyService
+@using KDBS.Services.GoodsService
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+
+@inject IJSRuntime JS
+@inject IJobService _jobDb
+@inject ICompanyService _companyDb
+@inject IGoodsService _goodsDb
+@inject ICategoryService _categoryDb
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject UserManager<UserModel> _userManager
+
+
+
+<div class="w-full h-full flex justify-center items-center">
+    <div class="w-full max-w-2xl">
+        <h1 class="text-3xl font-bold mb-6">Opret job opslag</h1>
+        <div class="card flex-shrink-0 w-full shadow-2xl bg-base-100">
+            <div class="card-body">
+                <label>JobList</label>
+                <NavLink href="/job/create" class="btn btn-ghost btn-sm rounded-btn">Opret jobopslag</NavLink>
+                <table>
+                    <tr>
+                        <td>Title</td>
+                        <td>Offenlig</td>
+                        <td>Oprettet</td>
+                        <td></td>
+                        <td>Handlinger</td>
+                    </tr>
+                    @foreach (var item in job)
+                    {
+                        <tr>
+                            <td>@item.Title</td>
+                            <td>@item.Added</td>
+                            <td>@item.Edited</td>
+                            <td></td>
+                            <td>
+                                <NavLink href="/job/rediger" class="btn btn-ghost btn-sm rounded-btn">Rediger</NavLink>
+                                <button @onclick="@(e => OnDeleteJob(@item.JobId))" class="btn btn-ghost btn-sm rounded-btn">Slet</button>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private List<JobModel> job = new List<JobModel>();
+    private UserModel user = new UserModel();
+
+    private void OnDeleteJob(string jobId)
+    {
+        _jobDb.DeleteJob(jobId);
+        job = job.Where(j => j.JobId != jobId).ToList();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var claim = authState.User;
+
+        user = await _userManager.GetUserAsync(claim);
+        user.Company = await _companyDb.GetCompanyByUser(user.Id);
+
+        job = await _jobDb.GetCompanyJobs(user.Company.CompanyId);
+    }
+}
