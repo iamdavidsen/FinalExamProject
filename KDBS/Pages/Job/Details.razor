@@ -1,4 +1,5 @@
 ﻿@page "/job/details/{jobid}"
+@attribute [Authorize(Roles = "Admin, Recruiter")]
 
 @using KDBS.Data
 @using KDBS.Models

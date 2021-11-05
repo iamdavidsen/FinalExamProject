@@ -86,6 +86,8 @@ namespace KDBS.Areas.Identity.Pages.Account
             {
                 _logger.LogInformation("User created a new account with password.");
 
+                await _userManager.AddToRoleAsync(user, "Recruiter");
+
                 var company = new CompanyModel()
                 {
                     Name = Input.CompanyName,

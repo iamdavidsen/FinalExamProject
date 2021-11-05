@@ -39,17 +39,17 @@ namespace KDBS
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<UserModel>(o =>
-            {
-                o.SignIn.RequireConfirmedAccount = false;
-                o.Password.RequireDigit = false;
-                o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequireLowercase = false;
-                o.Password.RequireUppercase = false;
-                o.Password.RequiredLength = 4;
-            })
+                {
+                    o.SignIn.RequireConfirmedAccount = false;
+                    o.Password.RequireDigit = false;
+                    o.Password.RequireNonAlphanumeric = false;
+                    o.Password.RequireLowercase = false;
+                    o.Password.RequireUppercase = false;
+                    o.Password.RequiredLength = 4;
+                })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -68,7 +68,12 @@ namespace KDBS
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env, 
+            UserManager<UserModel> userManager, 
+            RoleManager<IdentityRole> roleManager
+        )
         {
             if (env.IsDevelopment())
             {
@@ -96,6 +101,43 @@ namespace KDBS
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
+
+            Task.Run(() => CreateRolesAndUsers(userManager, roleManager)).Wait();
+        }
+
+        private async Task CreateRolesAndUsers(UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            var adminExist = await roleManager.RoleExistsAsync("Admin");
+
+            if (!adminExist)
+            {
+                var role = new IdentityRole { Name = "Admin" };
+                await roleManager.CreateAsync(role);
+
+                // Todo Change admin email and password
+                var user = new UserModel
+                {
+                    FirstName = "Admin",
+                    LastName = "Admin",
+                    UserName = "Administrator", 
+                    Email = "admin@rasmusdavidsen.com"
+                };
+                var userPWD = "test123";
+
+                var chkUser = await userManager.CreateAsync(user, userPWD);
+
+                if (chkUser.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, "Admin");
+                }
+            }
+
+            var recruiterExist = await roleManager.RoleExistsAsync("Recruiter");
+            if (!recruiterExist)
+            {
+                var role = new IdentityRole { Name = "Recruiter" };
+                await roleManager.CreateAsync(role);
+            }
         }
     }
 }
