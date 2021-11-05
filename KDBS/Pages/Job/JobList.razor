@@ -38,7 +38,7 @@
                     @foreach (var item in job)
                     {
                         <tr>
-                            <td>@item.Title</td>
+                            <td><NavLink target="_blank" href="@("/job/details/" + @item.JobId)" class="btn btn-ghost btn-sm rounded-btn">@item.Title</NavLink></td>
                             <td>@item.Added</td>
                             <td>@item.Edited</td>
                             <td></td>

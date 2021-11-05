@@ -4,6 +4,7 @@
 @using KDBS.Models
 @using KDBS.Models.Events
 @using KDBS.Data
+@using KDBS.Pages.Job
 @implements IDisposable
 @inject IJSRuntime _js
 @inject IConfiguration _configuration
@@ -12,23 +13,41 @@
 <div class="w-full, h-full overflow-hidden relative">
     <JobFilter OnFilterChanged="OnFilterChanged"></JobFilter>
     <div id="map" class="w-full, h-full"></div>
-    <div class="absolute job-popup card shadow-2xl bg-base-100" style="@_overlayStyle">
-        <div class="card-body">
-            <h2 class="card-title">@_selectedJob?.Title</h2>
-            <p>@_selectedJob?.Content</p>
-            <NavLink href="@("/job/details/" + @_selectedJob?.JobId)" class="btn btn-primary">Læs mere</NavLink>
-            <div class="card-actions">
-                <div class="btn-group" hidden="@HasNavigation">
-                    <button @onclick="@Previous" class="btn btn-sm btn-outline">Forrige Job</button>
-                    <button @onclick="@Next" class="btn btn-sm btn-outline">Næste Job</button>
+    @if (!ReadMoreIsActive)
+    {
+        <div class="absolute job-popup card shadow-2xl bg-base-100" style="@_overlayStyle">
+            <div class="card-body">
+                <h2 class="card-title">@_selectedJob?.Title</h2>
+                <p>@_selectedJob?.Content</p>
+                <button @onclick="@OnReadMoreClick" class="btn btn-primary mt-5">Læs mere</button>
+                @if (HasNavigation)
+                {
+                    <div class="card-actions">
+                        <div class="btn-group">
+                            <button @onclick="@Previous" class="btn btn-sm btn-outline">Forrige Job</button>
+                            <button @onclick="@Next" class="btn btn-sm btn-outline">Næste Job</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="absolute inset-0 w-full h-full flex p-6">
+            <div class="card flex-grow z-over-map shadow-2xl bg-base-100">
+                <div class="card-body">
+                    <Details JobId="@_selectedJob?.JobId"></Details>
+                    <button @onclick="@OnReadMoreClick" class="btn btn-primary mt-5">Læs mindre</button>
                 </div>
             </div>
         </div>
-    </div>
+    }
 </div>
 
 @code {
-    private bool HasNavigation => !(_currentPin != null && _currentPin.Jobs.Count > 1);
+    private bool HasNavigation => _currentPin != null && _currentPin.Jobs.Count > 1;
+    private bool ReadMoreIsActive = false;
 
     private DotNetObjectReference<Index>? _objectReference = null;
     private List<PreviewPoint> _previewPoints = new List<PreviewPoint>();
@@ -52,7 +71,13 @@
         }
     }
 
-    [JSInvokable] public async Task ClickedOnPin(PinClickEvent pinClickEvent)
+    private void OnReadMoreClick()
+    {
+        ReadMoreIsActive = !ReadMoreIsActive;
+    }
+
+    [JSInvokable]
+    public async Task ClickedOnPin(PinClickEvent pinClickEvent)
     {
         var previewPoint = _previewPoints.FirstOrDefault(p => p.Id == pinClickEvent.Id);
 
@@ -70,7 +95,8 @@
         StateHasChanged();
     }
 
-    [JSInvokable] public void HidePopup()
+    [JSInvokable]
+    public void HidePopup()
     {
         _overlayStyle = "display: none;";
         StateHasChanged();
@@ -88,12 +114,12 @@
         var pins = jobs
             .GroupBy(j => $@"{j.Company.Latitude}{j.Company.Longitude}")
             .Select(j => new PreviewPoint()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Latitude = j.First().Company.Latitude,
-                Longitude = j.First().Company.Longitude,
-                Jobs = j.Select(job => job.JobId).ToList()
-            }).ToList();
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Latitude = j.First().Company.Latitude,
+                    Longitude = j.First().Company.Longitude,
+                    Jobs = j.Select(job => job.JobId).ToList()
+                }).ToList();
 
         _previewPoints = pins;
         await _js.InvokeVoidAsync("addPins", pins);

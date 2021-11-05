@@ -3,9 +3,13 @@
 @tailwind utilities;
 
 .validation-error li {
-    @apply alert alert-error
+    @apply alert alert-error;
 }
 
 .job-popup {
-    transform: translate(-50%, calc(-100% - 1.5rem));
+    transform: translate(-50%, calc(-80%));
+}
+
+.z-over-map {
+    z-index: 2000;
 }

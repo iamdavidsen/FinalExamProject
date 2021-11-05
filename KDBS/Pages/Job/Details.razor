@@ -90,6 +90,10 @@
 
     protected override async Task OnInitializedAsync()
     {
+        if (JobId == null)
+        {
+            return;
+        }
         jobModel = await _jobDb.GetJob(JobId);
         var goods = await _goodsDb.GetGoods();
         var category = await _categoryDb.GetCategories();

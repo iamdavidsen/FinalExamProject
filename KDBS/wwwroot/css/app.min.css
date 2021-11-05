@@ -1471,6 +1471,13 @@ html {
   position: relative;
 }
 
+.inset-0 {
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+}
+
 .mx-2 {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
@@ -1483,6 +1490,10 @@ html {
 
 .mt-4 {
   margin-top: 1rem;
+}
+
+.mt-5 {
+  margin-top: 1.25rem;
 }
 
 .mt-6 {
@@ -1660,6 +1671,10 @@ html {
   padding: 1rem;
 }
 
+.p-6 {
+  padding: 1.5rem;
+}
+
 .px-2 {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
@@ -1754,7 +1769,11 @@ html {
 }
 
 .job-popup {
-  transform: translate(-50%, calc(-100% - 1.5rem));
+  transform: translate(-50%, calc(-80%));
+}
+
+.z-over-map {
+  z-index: 2000;
 }
 
 @media (min-width: 640px) {
