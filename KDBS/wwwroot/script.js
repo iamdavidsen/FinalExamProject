@@ -39,7 +39,8 @@ function addPins(pins) {
 
 function initTextField() {
     tinymce.init({
-        selector: '#mytextarea'
+        selector: '#mytextarea',
+        height: "400px"
     });
 }
 
@@ -58,8 +59,8 @@ function onClickFactory(id) {
 
         window.dotnetRef && window.dotnetRef.invokeMethodAsync('ClickedOnPin', {
             id: id,
-            pageX: e.point.x,
-            pageY: e.point.y,
+            pageX: Math.floor(e.point.x),
+            pageY: Math.floor(e.point.y),
         });
     }
 }

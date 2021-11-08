@@ -2,7 +2,6 @@
 
 <AuthorizeView>
     <Authorized>
-        <a class="btn btn-ghost btn-sm rounded-btn">Hello, @context.User.Identity.Name!</a>
         <NavLink href="/job" class="btn btn-ghost btn-sm rounded-btn">Job opslag</NavLink>
         <form method="post" action="Identity/Account/LogOut">
             <button type="submit" class="btn btn-ghost btn-sm rounded-btn">Log out</button>

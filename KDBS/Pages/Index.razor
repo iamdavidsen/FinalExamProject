@@ -34,14 +34,9 @@
     }
     else
     {
-        <div class="absolute inset-0 w-full h-full flex p-6">
-            <div class="card flex-grow z-over-map shadow-2xl bg-base-100">
-                <div class="card-body">
-                    <Details JobId="@_selectedJob?.JobId"></Details>
-                    <button @onclick="@OnReadMoreClick" class="btn btn-primary mt-5">Læs mindre</button>
-                </div>
-            </div>
-        </div>
+        <CardOverlay>
+            <Details JobId="@_selectedJob?.JobId" OnClickCallback="@OnReadMoreClick"></Details>
+        </CardOverlay>
     }
 </div>
 

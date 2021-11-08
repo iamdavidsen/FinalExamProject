@@ -1,0 +1,12 @@
+﻿<div class="absolute inset-0 w-full h-full flex p-6">
+    <div class="card flex-grow z-over-map shadow-2xl bg-base-100">
+        <div class="card-body">
+            @ChildContent
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

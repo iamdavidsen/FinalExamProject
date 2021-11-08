@@ -3,6 +3,7 @@
 
 @using KDBS.Data
 @using KDBS.Models
+@using KDBS.Pages.Components
 @using KDBS.Services.CategoryService
 @using KDBS.Services.JobService
 @using KDBS.Services.CompanyService
@@ -20,50 +21,68 @@
 
 
 
-<div class="w-full h-full flex justify-center items-center">
-    <div class="w-full max-w-2xl">
-        <h1 class="text-3xl font-bold mb-6">Opret job opslag</h1>
+<div class="w-full h-full flex justify-center items-center relative">
+    <div class="w-full max-w-3xl">
+        <h1 class="text-3xl font-bold mb-6">JobList</h1>
         <div class="card flex-shrink-0 w-full shadow-2xl bg-base-100">
             <div class="card-body">
-                <label>JobList</label>
-                <NavLink href="/job/create" class="btn btn-ghost btn-sm rounded-btn">Opret jobopslag</NavLink>
-                <table>
-                    <tr>
-                        <td>Title</td>
-                        <td>Offenlig</td>
-                        <td>Oprettet</td>
-                        <td></td>
-                        <td>Handlinger</td>
-                    </tr>
-                    @foreach (var item in job)
-                    {
+                <button @onclick="@OnCreateJobClick" class="btn btn-ghost btn-sm rounded-btn mb-3">Opret jobopslag</button>
+                <table class="table w-full table-zebra">
+                    <thead>
                         <tr>
-                            <td><NavLink target="_blank" href="@("/job/details/" + @item.JobId)" class="btn btn-ghost btn-sm rounded-btn">@item.Title</NavLink></td>
-                            <td>@item.Added</td>
-                            <td>@item.Edited</td>
-                            <td></td>
-                            <td>
-                                <NavLink href="@("/job/edit/" + @item.JobId)" class="btn btn-ghost btn-sm rounded-btn">Rediger</NavLink>
-                                <button @onclick="@(e => OnDeleteJob(@item.JobId))" class="btn btn-ghost btn-sm rounded-btn">Slet</button>
-                            </td>
+                            <th class="text-center">Title</th>
+                            <th class="text-center">Added</th>
+                            <th class="text-center">Edited</th>
+                            <th class="text-center">Handlinger</th>
                         </tr>
-                    }
+                    </thead>
+                    <tbody>
+                        @foreach (var item in job)
+                        {
+                            <tr>
+                                <td><button @onclick="@(e => OnReadMoreClick(item.JobId))" class="btn btn-ghost btn-sm rounded-btn">@item.Title</button></td>
+                                <td>@item.Added</td>
+                                <td>@item.Edited</td>
+                                <td>
+                                    <button @onclick="@(e => OnEditJobClick(item.JobId))" class="btn btn-ghost btn-sm rounded-btn">Rediger</button>
+                                    <button @onclick="@(e => OnDeleteJob(@item.JobId))" class="btn btn-ghost btn-sm rounded-btn">Slet</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
+    @if (ShowMoreInfo)
+    {
+        <CardOverlay>
+            <Details JobId="@_jobId" OnClickCallback="@OnHideMoreInfo"></Details>
+        </CardOverlay>
+    }
+    @if (ShowCreateJob)
+    {
+        <CardOverlay>
+            <Create OnClickCallback="@OnCreateJobCloseClick"></Create>
+        </CardOverlay>
+    }
+    @if (ShowEditJob)
+    {
+        <CardOverlay>
+            <Edit JobId="@_jobId" OnClickCallback="@OnEditJobCloseClick"></Edit>
+        </CardOverlay>
+    }
 </div>
 
 
 @code {
     private List<JobModel> job = new List<JobModel>();
     private UserModel user = new UserModel();
+    private string _jobId = "";
 
-    private void OnDeleteJob(string jobId)
-    {
-        _jobDb.DeleteJob(jobId);
-        job = job.Where(j => j.JobId != jobId).ToList();
-    }
+    private bool ShowMoreInfo = false;
+    private bool ShowCreateJob = false;
+    private bool ShowEditJob = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -73,6 +92,53 @@
         user = await _userManager.GetUserAsync(claim);
         user.Company = await _companyDb.GetCompanyByUser(user.Id);
 
+
         job = await _jobDb.GetCompanyJobs(user.Company.CompanyId);
+    }
+
+    private void OnDeleteJob(string jobId)
+    {
+        _jobDb.DeleteJob(jobId);
+        job = job.Where(j => j.JobId != jobId).ToList();
+    }
+
+    // Edit job clicks
+    private void OnEditJobClick(string jobId)
+    {
+        ShowEditJob = true;
+        _jobId = jobId;
+    }
+
+    private void OnEditJobCloseClick()
+    {
+        ShowEditJob = false;
+        _jobId = "";
+    }
+
+    // Create job clicks
+    private void OnCreateJobClick()
+    {
+        ShowCreateJob = true;
+    }
+    private void OnCreateJobCloseClick(JobModel? j)
+    {
+        ShowCreateJob = false;
+        if (j != null)
+        {
+            job.Add(j);
+        }
+    }
+
+    // Read more clicks
+    private void OnReadMoreClick(string jobId)
+    {
+        ShowMoreInfo = true;
+        _jobId = jobId;
+    }
+
+    private void OnHideMoreInfo()
+    {
+        ShowMoreInfo = false;
+        _jobId = "";
     }
 }

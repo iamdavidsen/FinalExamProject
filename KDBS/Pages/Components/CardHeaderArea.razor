@@ -1,0 +1,15 @@
+﻿<div class="flex justify-between">
+    <h1 class="text-3xl font-bold mb-6">@HeaderText</h1>
+    <button @onclick="@OnClickCallback" class="btn btn-square btn-ghost">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current text-error">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+    </button>
+</div>
+
+@code {
+    [Parameter]
+    public string HeaderText { get; set; }
+    [Parameter]
+    public EventCallback OnClickCallback { get; set; }
+}

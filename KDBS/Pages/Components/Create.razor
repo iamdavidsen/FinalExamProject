@@ -1,0 +1,78 @@
+﻿@attribute [Authorize]
+
+@using KDBS.Data
+@using KDBS.Models
+@using KDBS.Services.CategoryService
+@using KDBS.Services.JobService
+@using KDBS.Services.CompanyService
+@using KDBS.Services.GoodsService
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+
+@inject IJSRuntime JS
+@inject IJobService _jobDb
+@inject ICompanyService _companyDb
+@inject IGoodsService _goodsDb
+@inject ICategoryService _categoryDb
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject UserManager<UserModel> _userManager
+@inject NavigationManager NavManager
+
+<CardHeaderArea HeaderText="Opret job opslag" OnClickCallback="@OnClosePressed"></CardHeaderArea>
+<EditForm Model="@job" OnValidSubmit="@OnCreateJob">
+    <JobFormView buttonText="Opret job" job="@job"></JobFormView>
+</EditForm>
+
+@code {
+    [Parameter]
+    public EventCallback<JobModel> OnClickCallback { get; set; }
+
+    private Job job = new Job();
+    private UserModel user = new UserModel();
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("initTextField");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        job.Goods = (await _goodsDb.GetGoods()).Select(g => new Goods() { GoodsId = g.GoodsId, Title = g.Title, IsSelected = false }).ToList();
+        job.Categories = (await _categoryDb.GetCategories()).Select(c => new Category() { CategoryId = c.CategoryId, Title = c.Title }).ToList();
+    }
+
+    private async Task OnClosePressed()
+    {
+        await OnClickCallback.InvokeAsync();
+    }
+
+    private async Task OnCreateJob()
+    {
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var claim = authState.User;
+
+        user = await _userManager.GetUserAsync(claim);
+        user.Company = await _companyDb.GetCompanyByUser(user.Id);
+
+        var selectedGoods = await _goodsDb.GetGoods(job.Goods.Where(g => g.IsSelected).Select(r => r.GoodsId).ToList());
+
+        JobModel j = new JobModel()
+            {
+                Title = job.JobTitle,
+                Salary = job.Salary,
+                Content = job.JobContent ?? "This should be filled",
+                Added = DateTime.Now,
+                Edited = DateTime.Now,
+                CompanyId = user.Company.CompanyId,
+                CategoryId = job.CategoryId,
+                Goods = selectedGoods
+            };
+
+        await _jobDb.CreateJob(j);
+        await OnClickCallback.InvokeAsync(j);
+    }
+}

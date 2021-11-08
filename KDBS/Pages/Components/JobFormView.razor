@@ -1,0 +1,70 @@
+﻿@using KDBS.Models
+
+<DataAnnotationsValidator />
+<ValidationSummary />
+<div class="flex justify-between">
+    <div class="w-full">
+        <label class="form-control">
+            <div class="label label-text">
+                Title
+            </div>
+            <InputText id="title" class="input input-bordered" @bind-Value="job.JobTitle" />
+        </label>
+
+        <label class="form-control">
+            <div class="label label-text">
+                Beskrivelse
+            </div>
+            <InputTextArea id="mytextarea" class="input input-bordered" @bind-Value="job.JobContent" />
+        </label>
+    </div>
+    <div class="ml-5 w-1/2">
+        <label class="form-control">
+            <div class="label label-text">
+                Kategorier
+            </div>
+            <InputSelect id="category" class="input input-bordered" @bind-Value="@job.CategoryId">
+                @foreach (var category in job.Categories ?? new List<Category>())
+                {
+                    <option value="@category.CategoryId">@category.Title</option>
+                }
+            </InputSelect>
+        </label>
+
+        <label class="form-control">
+            <div class="label label-text">
+                Løn
+            </div>
+            <InputNumber id="salary" class="input input-bordered" @bind-Value="job.Salary" />
+        </label>
+        <div class="form-control">
+            <div class="label label-text">
+                Goder
+            </div>
+            <ul>
+                @foreach (var good in job.Goods ?? new List<Goods>())
+                {
+                    <li class="pl-3">
+                        <label class="cursor-pointer label label-text p-0 pb-2">
+                            <div>
+                                @good.Title:
+                            </div>
+                            <InputCheckbox class="checkbox" style="height: 1.2rem; width: 1.2rem;" id="@good.GoodsId" @bind-Value="@good.IsSelected" />
+                        </label>
+
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="form-control mt-6">
+    <button type="submit" class="btn btn-primary">@buttonText</button>
+</div>
+
+@code {
+    [Parameter]
+    public Job job { get; set; }
+    [Parameter]
+    public string buttonText { get; set; }
+}

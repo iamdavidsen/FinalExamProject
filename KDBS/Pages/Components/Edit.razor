@@ -1,5 +1,4 @@
-﻿@page "/job/details/{jobid}"
-@attribute [Authorize(Roles = "Admin, Recruiter")]
+﻿@attribute [Authorize(Roles = "Admin, Recruiter")]
 
 @using KDBS.Data
 @using KDBS.Models
@@ -19,62 +18,17 @@
 @inject UserManager<UserModel> _userManager
 @inject NavigationManager NavManager
 
-<div class="w-full h-full flex justify-center items-center">
-    <div class="w-full max-w-2xl">
-        <h1 class="text-3xl font-bold mb-6">@job.JobTitle</h1>
-        <div class="card flex-shrink-0 w-full shadow-2xl bg-base-100">
-            <div class="card-body">
-                <label class="form-control">
-                    <p class="label label-text">
-                        @job.JobTitle
-                    </p>
-                </label>
-                <label class="form-control">
-                    <p class="label label-text">
-                        @jobModel?.Company?.Name
-                    </p>
-                </label>
-                <label class="form-control">
-                    <p class="label label-text">
-                        Løn: @job.Salary
-                    </p>
-                </label>
-                <label class="form-control">
-                    <p class="label label-text">
-                        Goder:
-                        @foreach (var good in job.Goods ?? new List<Goods>())
-                        {
-                            @if (good.IsSelected)
-                            {
-                                @good.Title
-                            }
-                        }
-                    </p>
-                </label>
-                <label class="form-control">
-                    <p class="label label-text">
-                        Kategori:
-                        @foreach (var category in job.Categories ?? new List<Category>())
-                        {
-                            @if (jobModel.CategoryId == category.CategoryId)
-                                @category.Title
-                        }
-                    </p>
-                </label>
-                <label class="form-control">
-                    <p class="label label-text">
-                        Beskrivelse:
-                        @job.JobContent
-                    </p>
-                </label>
-            </div>
-        </div>
-    </div>
-</div>
+<CardHeaderArea HeaderText="@("Edit job opslag for id: " + @jobModel?.Title)" OnClickCallback="@OnClosePressed"></CardHeaderArea>
+
+<EditForm Model="@job" OnValidSubmit="@OnEditJob">
+    <JobFormView buttonText="Opdater" job="@job"></JobFormView>
+</EditForm>
 
 @code {
     [Parameter]
     public string JobId { get; set; }
+    [Parameter]
+    public EventCallback OnClickCallback { get; set; }
 
     private Job job = new Job();
     private JobModel jobModel;
@@ -90,10 +44,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (JobId == null)
-        {
-            return;
-        }
         jobModel = await _jobDb.GetJob(JobId);
         var goods = await _goodsDb.GetGoods();
         var category = await _categoryDb.GetCategories();
@@ -116,7 +66,12 @@
 
     }
 
-    private async Task OnCreateJob()
+    private async Task OnClosePressed()
+    {
+        await OnClickCallback.InvokeAsync();
+    }
+
+    private async Task OnEditJob()
     {
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var claim = authState.User;
@@ -134,6 +89,6 @@
         jobModel.Goods = selectedGoods;
 
         await _jobDb.EditJob(jobModel);
-        NavManager.NavigateTo("/job");
+        await OnClickCallback.InvokeAsync();
     }
 }

@@ -529,10 +529,6 @@ video {
  * Ensure the default browser behavior of the `hidden` attribute.
  */
 
-[hidden] {
-  display: none;
-}
-
 *, ::before, ::after {
   --tw-border-opacity: 1;
   border-color: rgba(229, 231, 235, var(--tw-border-opacity));
@@ -687,6 +683,32 @@ html {
   display: flex;
 }
 
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition-property: background-color,border-color,color,fill,stroke,opacity,box-shadow,transform;
+  transition-duration: .15s;
+  transition-duration: .2s;
+  transition-timing-function: cubic-bezier(.4,0,.2,1);
+  height: 1.25rem;
+  font-size: .875rem;
+  line-height: 1.25rem;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  padding-left: .563rem;
+  padding-right: .563rem;
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--n)/var(--tw-bg-opacity,1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--n)/var(--tw-border-opacity,1));
+  border-width: 1px;
+  --tw-text-opacity: 1;
+  color: hsla(var(--nc)/var(--tw-text-opacity,1));
+  border-radius: var(--rounded-badge,1.9rem);
+}
+
 .btn {
   border-color: transparent;
   border-color: hsla(var(--n)/var(--tw-border-opacity,1));
@@ -729,6 +751,12 @@ html {
 .btn:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
+}
+
+.btn-square {
+  height: 3rem;
+  padding: 0;
+  width: 3rem;
 }
 
 @-webkit-keyframes spin {
@@ -1065,6 +1093,48 @@ html {
   outline: 2px solid transparent;
   outline-offset: 2px;
   box-shadow: 0 0 0 2px hsl(var(--b1)),0 0 0 4px hsla(var(--bc)/.2);
+}
+
+.btn .badge {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--b1)/var(--tw-bg-opacity,1));
+  border-color: transparent;
+  --tw-text-opacity: 1;
+  color: hsla(var(--bc)/var(--tw-text-opacity,1));
+}
+
+.btn-outline .badge {
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--nf)/var(--tw-border-opacity,1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--nc)/var(--tw-text-opacity,1));
+}
+
+.btn-outline.btn-primary .badge {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--p)/var(--tw-bg-opacity,1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--p)/var(--tw-border-opacity,1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--pc)/var(--tw-text-opacity,1));
+}
+
+.btn-outline:hover .badge {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--b2)/var(--tw-bg-opacity,1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--b2)/var(--tw-border-opacity,1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--bc)/var(--tw-text-opacity,1));
+}
+
+.btn-outline.btn-primary:hover .badge {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--pc)/var(--tw-bg-opacity,1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--pc)/var(--tw-border-opacity,1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--p)/var(--tw-text-opacity,1));
 }
 
 .btn:active:focus,.btn:active:hover {
@@ -1443,6 +1513,21 @@ html {
   background-color: hsla(var(--b1)/var(--tw-bg-opacity,1));
 }
 
+.table-zebra tbody tr td:first-child,.table-zebra tbody tr th:first-child {
+  border-top-left-radius: .5rem;
+  border-bottom-left-radius: .5rem;
+}
+
+.table-zebra tbody tr td:last-child,.table-zebra tbody tr th:last-child {
+  border-top-right-radius: .5rem;
+  border-bottom-right-radius: .5rem;
+}
+
+.table-zebra tbody tr:nth-child(2n) td,.table-zebra tbody tr:nth-child(2n) th {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--b2)/var(--tw-bg-opacity,1));
+}
+
 .rounded-box {
   border-radius: var(--rounded-box,1rem);
 }
@@ -1461,6 +1546,39 @@ html {
 
 .btn-block {
   width: 100%;
+}
+
+.btn-square.btn-sm {
+  height: 2rem;
+  padding: 0;
+  width: 2rem;
+}
+
+.badge-primary {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--p)/var(--tw-bg-opacity,1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--p)/var(--tw-border-opacity,1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--pc)/var(--tw-text-opacity,1));
+}
+
+.badge-secondary {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--s)/var(--tw-bg-opacity,1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--s)/var(--tw-border-opacity,1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--sc)/var(--tw-text-opacity,1));
+}
+
+.badge-accent {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--a)/var(--tw-bg-opacity,1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--a)/var(--tw-border-opacity,1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--ac)/var(--tw-text-opacity,1));
 }
 
 .absolute {
@@ -1500,12 +1618,32 @@ html {
   margin-top: 1.5rem;
 }
 
+.mr-1 {
+  margin-right: 0.25rem;
+}
+
 .mr-2 {
   margin-right: 0.5rem;
 }
 
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+
 .mb-6 {
   margin-bottom: 1.5rem;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
+.ml-5 {
+  margin-left: 1.25rem;
+}
+
+.inline-block {
+  display: inline-block;
 }
 
 .flex {
@@ -1516,16 +1654,24 @@ html {
   display: table;
 }
 
-.hidden {
-  display: none;
+.h-6 {
+  height: 1.5rem;
 }
 
 .h-full {
   height: 100%;
 }
 
+.w-6 {
+  width: 1.5rem;
+}
+
 .w-52 {
   width: 13rem;
+}
+
+.w-1\/2 {
+  width: 50%;
 }
 
 .w-full {
@@ -1534,10 +1680,6 @@ html {
 
 .max-w-xl {
   max-width: 36rem;
-}
-
-.max-w-2xl {
-  max-width: 42rem;
 }
 
 .max-w-3xl {
@@ -1644,6 +1786,10 @@ html {
   justify-content: center;
 }
 
+.justify-between {
+  justify-content: space-between;
+}
+
 .gap-x-2 {
   -moz-column-gap: 0.5rem;
        column-gap: 0.5rem;
@@ -1661,6 +1807,14 @@ html {
 .bg-base-100 {
   --tw-bg-opacity: 1;
   background-color: hsla(var(--b1) / var(--tw-bg-opacity));
+}
+
+.stroke-current {
+  stroke: currentColor;
+}
+
+.p-0 {
+  padding: 0px;
 }
 
 .p-2 {
@@ -1685,8 +1839,25 @@ html {
   padding-right: 1rem;
 }
 
+.pb-2 {
+  padding-bottom: 0.5rem;
+}
+
+.pl-3 {
+  padding-left: 0.75rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
 .text-lg {
   font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
   line-height: 1.75rem;
 }
 
@@ -1697,6 +1868,11 @@ html {
 
 .font-bold {
   font-weight: 700;
+}
+
+.text-error {
+  --tw-text-opacity: 1;
+  color: hsla(var(--er) / var(--tw-text-opacity));
 }
 
 *, ::before, ::after {
