@@ -12,6 +12,7 @@ namespace KDBS.Models
         public string JobContent { get; set; }
         public string CategoryId { get; set; }
         public int Salary { get; set; }
+        public string LinkToCompany { get; set; }
         public List<Category> Categories { get; set; }
         public List<Goods> Goods { get; set; }
 

@@ -3,22 +3,22 @@
 namespace KDBS.Migrations
 {
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    public partial class SalaryForJobAdded : Migration
+    public partial class AddedLinkToCompany : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "Salary",
+            migrationBuilder.AddColumn<string>(
+                name: "LinkToCompany",
                 table: "Jobs",
-                type: "int",
+                type: "nvarchar(max)",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: "");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Salary",
+                name: "LinkToCompany",
                 table: "Jobs");
         }
     }

@@ -2,6 +2,7 @@
 
 namespace KDBS.Migrations
 {
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public partial class AddedCategoriesAndGoods : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

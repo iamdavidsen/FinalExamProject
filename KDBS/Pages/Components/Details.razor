@@ -60,6 +60,12 @@
         }
     </div>
 </div>
+<div>
+    @if (job.LinkToCompany != null && job.LinkToCompany != "")
+    {
+        <a href="@job.LinkToCompany" target="_blank" class="btn btn-secondary">Ansøg her</a>
+    }
+</div>
 
 @code {
     [Parameter]
@@ -89,7 +95,7 @@
         var goods = await _goodsDb.GetGoods();
         var category = await _categoryDb.GetCategories();
 
-        job = new Job() { JobTitle = jobModel.Title, JobContent = jobModel.Content, CategoryId = jobModel.CategoryId, Salary = jobModel.Salary };
+        job = new Job() { JobTitle = jobModel.Title, JobContent = jobModel.Content, CategoryId = jobModel.CategoryId, Salary = jobModel.Salary, LinkToCompany = jobModel.LinkToCompany };
 
         job.Goods = goods.Select(g => new Goods()
             {

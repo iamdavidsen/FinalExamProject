@@ -18,6 +18,7 @@
             <InputTextArea id="mytextarea" class="input input-bordered" @bind-Value="job.JobContent" />
         </label>
     </div>
+
     <div class="ml-5 w-1/2">
         <label class="form-control">
             <div class="label label-text">
@@ -37,6 +38,13 @@
             </div>
             <InputNumber id="salary" class="input input-bordered" @bind-Value="job.Salary" />
         </label>
+        <label class="form-control">
+            <div class="label label-text">
+                Hjemmeside link
+            </div>
+            <InputText id="linkToCompany" class="input input-bordered" @bind-Value="job.LinkToCompany" />
+        </label>
+
         <div class="form-control">
             <div class="label label-text">
                 Goder

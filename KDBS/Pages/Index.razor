@@ -16,17 +16,16 @@
     @if (!ReadMoreIsActive)
     {
         <div class="absolute job-popup card shadow-2xl bg-base-100" style="@_overlayStyle">
-            <div class="card-body">
+            <div class="card-body max-w-xs">
                 <h2 class="card-title">@_selectedJob?.Title</h2>
-                <p>@_selectedJob?.Content</p>
+                <div>@_selectedContent</div>
                 <button @onclick="@OnReadMoreClick" class="btn btn-primary mt-5">Læs mere</button>
                 @if (HasNavigation)
                 {
-                    <div class="card-actions">
-                        <div class="btn-group">
-                            <button @onclick="@Previous" class="btn btn-sm btn-outline">Forrige Job</button>
-                            <button @onclick="@Next" class="btn btn-sm btn-outline">Næste Job</button>
-                        </div>
+                    <div class="mt-5 flex justify-between">
+                        <button @onclick="@Previous" class="btn-xs p-0"><ion-icon name="chevron-back-outline"></ion-icon></button>
+                        <label>@_pageNumbers.CurrentPage / @_pageNumbers.TotalPages jobs</label>
+                        <button @onclick="@Next" class="btn-xs p-0"><ion-icon name="chevron-forward-outline"></ion-icon></button>
                     </div>
                 }
             </div>
@@ -53,6 +52,8 @@
     private PreviewPoint? _currentPin = null;
 
     private JobModel? _selectedJob = null;
+    private string _selectedContent = "";
+    private Pagination _pageNumbers = new Pagination() {CurrentPage = 1, TotalPages = 0};
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -83,6 +84,7 @@
 
         _currentPreviewIndex = 0;
         _currentPin = previewPoint;
+        _pageNumbers.CurrentPage = 1;
 
         await LoadCurrentJob();
 
@@ -117,6 +119,7 @@
                 }).ToList();
 
         _previewPoints = pins;
+        _pageNumbers.TotalPages = jobs.Count();
         await _js.InvokeVoidAsync("addPins", pins);
     }
 
@@ -142,6 +145,7 @@
         }
 
         _selectedJob = job;
+        _selectedContent = job.Content.Length > 150 ? job.Content.Substring(0, 150) + "..." : job.Content;
     }
 
     private async Task Next()
@@ -152,6 +156,7 @@
         if (_currentPin.Jobs.Count == nextIndex) nextIndex = 0;
 
         _currentPreviewIndex = nextIndex;
+        _pageNumbers.CurrentPage = nextIndex + 1;
         await LoadCurrentJob();
     }
 
@@ -163,6 +168,7 @@
         if (nextIndex < 0) nextIndex = _currentPin.Jobs.Count - 1;
 
         _currentPreviewIndex = nextIndex;
+        _pageNumbers.CurrentPage = nextIndex + 1;
         await LoadCurrentJob();
     }
 

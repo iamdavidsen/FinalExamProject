@@ -775,11 +775,6 @@ html {
   }
 }
 
-.btn-group {
-  display: flex;
-  flex-wrap: wrap;
-}
-
 .card {
   display: flex;
   flex-direction: column;
@@ -802,18 +797,6 @@ html {
 
 .card figure,.card figure>* {
   width: 100%;
-}
-
-.card-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  margin-left: -.25rem;
-  margin-right: -.25rem;
-}
-
-.card-actions>* {
-  margin: .25rem;
 }
 
 .checkbox:focus {
@@ -1103,40 +1086,6 @@ html {
   color: hsla(var(--bc)/var(--tw-text-opacity,1));
 }
 
-.btn-outline .badge {
-  --tw-border-opacity: 1;
-  border-color: hsla(var(--nf)/var(--tw-border-opacity,1));
-  --tw-text-opacity: 1;
-  color: hsla(var(--nc)/var(--tw-text-opacity,1));
-}
-
-.btn-outline.btn-primary .badge {
-  --tw-bg-opacity: 1;
-  background-color: hsla(var(--p)/var(--tw-bg-opacity,1));
-  --tw-border-opacity: 1;
-  border-color: hsla(var(--p)/var(--tw-border-opacity,1));
-  --tw-text-opacity: 1;
-  color: hsla(var(--pc)/var(--tw-text-opacity,1));
-}
-
-.btn-outline:hover .badge {
-  --tw-bg-opacity: 1;
-  background-color: hsla(var(--b2)/var(--tw-bg-opacity,1));
-  --tw-border-opacity: 1;
-  border-color: hsla(var(--b2)/var(--tw-border-opacity,1));
-  --tw-text-opacity: 1;
-  color: hsla(var(--bc)/var(--tw-text-opacity,1));
-}
-
-.btn-outline.btn-primary:hover .badge {
-  --tw-bg-opacity: 1;
-  background-color: hsla(var(--pc)/var(--tw-bg-opacity,1));
-  --tw-border-opacity: 1;
-  border-color: hsla(var(--pc)/var(--tw-border-opacity,1));
-  --tw-text-opacity: 1;
-  color: hsla(var(--p)/var(--tw-text-opacity,1));
-}
-
 .btn:active:focus,.btn:active:hover {
   -webkit-animation: none;
   animation: none;
@@ -1174,6 +1123,26 @@ html {
   box-shadow: 0 0 0 2px hsl(var(--b1)),0 0 0 4px hsl(var(--p));
 }
 
+.btn-secondary {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--s)/var(--tw-bg-opacity,1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--s)/var(--tw-border-opacity,1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--sc)/var(--tw-text-opacity,1));
+}
+
+.btn-secondary:hover {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--sf)/var(--tw-bg-opacity,1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--sf)/var(--tw-border-opacity,1));
+}
+
+.btn-secondary:focus-visible {
+  box-shadow: 0 0 0 2px hsl(var(--b1)),0 0 0 4px hsl(var(--s));
+}
+
 .btn-ghost {
   background-color: transparent;
   border-color: transparent;
@@ -1190,47 +1159,6 @@ html {
 
 .btn-ghost:focus-visible {
   box-shadow: 0 0 0 2px currentColor;
-}
-
-.btn-outline {
-  background-color: transparent;
-  border-color: currentColor;
-  --tw-text-opacity: 1;
-  color: hsla(var(--bc)/var(--tw-text-opacity,1));
-}
-
-.btn-outline:hover {
-  --tw-bg-opacity: 1;
-  background-color: hsla(var(--bc)/var(--tw-bg-opacity,1));
-  --tw-border-opacity: 1;
-  border-color: hsla(var(--bc)/var(--tw-border-opacity,1));
-  --tw-text-opacity: 1;
-  color: hsla(var(--b1)/var(--tw-text-opacity,1));
-}
-
-.btn-outline.btn-primary {
-  --tw-text-opacity: 1;
-  color: hsla(var(--p)/var(--tw-text-opacity,1));
-}
-
-.btn-outline.btn-primary:hover {
-  --tw-bg-opacity: 1;
-  background-color: hsla(var(--pf)/var(--tw-bg-opacity,1));
-  --tw-border-opacity: 1;
-  border-color: hsla(var(--pf)/var(--tw-border-opacity,1));
-  --tw-text-opacity: 1;
-  color: hsla(var(--pc)/var(--tw-text-opacity,1));
-}
-
-.btn-group>.btn:not(:first-child) {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  margin-left: -1px;
-}
-
-.btn-group>.btn:not(:last-child) {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
 }
 
 @-webkit-keyframes button-pop {
@@ -1262,14 +1190,6 @@ html {
   font-size: 1.25rem;
   line-height: 1.75rem;
   margin-bottom: .75rem;
-}
-
-.card-actions:first-child {
-  margin-bottom: .5rem;
-}
-
-.card-actions:last-child {
-  margin-top: 1.5rem;
 }
 
 .checkbox {
@@ -1536,6 +1456,14 @@ html {
   border-radius: var(--rounded-btn,.5rem);
 }
 
+.btn-xs {
+  height: 1.5rem;
+  padding-left: .5rem;
+  padding-right: .5rem;
+  min-height: 1.5rem;
+  font-size: .75rem;
+}
+
 .btn-sm {
   height: 2rem;
   padding-left: .75rem;
@@ -1546,6 +1474,12 @@ html {
 
 .btn-block {
   width: 100%;
+}
+
+.btn-square.btn-xs {
+  height: 1.5rem;
+  padding: 0;
+  width: 1.5rem;
 }
 
 .btn-square.btn-sm {
@@ -1676,6 +1610,10 @@ html {
 
 .w-full {
   width: 100%;
+}
+
+.max-w-xs {
+  max-width: 20rem;
 }
 
 .max-w-xl {
@@ -1873,6 +1811,10 @@ html {
 .text-error {
   --tw-text-opacity: 1;
   color: hsla(var(--er) / var(--tw-text-opacity));
+}
+
+.hover\:underline:hover {
+  text-decoration: underline;
 }
 
 *, ::before, ::after {
