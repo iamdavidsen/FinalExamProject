@@ -126,6 +126,7 @@
     private async Task LoadCurrentJob()
     {
         var jobId = _currentPin?.Jobs[_currentPreviewIndex];
+        _pageNumbers.TotalPages = _currentPin?.Jobs.Count() ?? 0;
 
         if (jobId == null)
         {
