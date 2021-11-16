@@ -18,7 +18,9 @@
         <div class="absolute job-popup card shadow-2xl bg-base-100" style="@_overlayStyle">
             <div class="card-body max-w-xs">
                 <h2 class="card-title">@_selectedJob?.Title</h2>
-                <div>@_selectedContent</div>
+                <div class="prose overflow-hidden" style="max-height: 136px;">
+                    @_selectedContent
+                </div>
                 <button @onclick="@OnReadMoreClick" class="btn btn-primary mt-5">Læs mere</button>
                 @if (HasNavigation)
                 {
@@ -52,7 +54,7 @@
     private PreviewPoint? _currentPin = null;
 
     private JobModel? _selectedJob = null;
-    private string _selectedContent = "";
+    private MarkupString _selectedContent = (MarkupString)"";
     private Pagination _pageNumbers = new Pagination() {CurrentPage = 1, TotalPages = 0};
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -146,7 +148,9 @@
         }
 
         _selectedJob = job;
-        _selectedContent = job.Content.Length > 150 ? job.Content.Substring(0, 150) + "..." : job.Content;
+        var jobContent = (MarkupString)job.Content;
+        _selectedContent = jobContent;
+        //_selectedContent = (jobContent.Length > 150 ? jobContent.Substring(0, 150) + "..." : jobContent);
     }
 
     private async Task Next()

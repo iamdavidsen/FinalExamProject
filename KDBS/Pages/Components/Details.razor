@@ -20,16 +20,12 @@
 
 <CardHeaderArea HeaderText="@job.JobTitle" OnClickCallback="@OnClickCallback"></CardHeaderArea>
 
-<div class="label label-text text-xl">
+<div class="label label-text text-xl pl-0">
     @jobModel?.Company?.Name
 </div>
 
-<div class="label label-text">
-    @job.JobContent
-</div>
-
 <div class="flex">
-    <div class="label label-text">
+    <div class="label label-text pl-0">
         <div class="badge badge-secondary">
             @job.Salary kr
         </div>
@@ -60,6 +56,11 @@
         }
     </div>
 </div>
+
+<div class="prose">
+    @((MarkupString)@job.JobContent)
+</div>
+
 <div>
     @if (job.LinkToCompany != null && job.LinkToCompany != "")
     {
@@ -76,14 +77,6 @@
     private Job job = new Job();
     private JobModel jobModel;
     private UserModel user = new UserModel();
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JS.InvokeVoidAsync("initTextField");
-        }
-    }
 
     protected override async Task OnInitializedAsync()
     {

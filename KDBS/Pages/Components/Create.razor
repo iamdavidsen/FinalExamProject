@@ -19,7 +19,7 @@
 @inject NavigationManager NavManager
 
 <CardHeaderArea HeaderText="Opret job opslag" OnClickCallback="@OnClosePressed"></CardHeaderArea>
-<EditForm Model="@job" OnValidSubmit="@OnCreateJob">
+<EditForm class="flex-1" Model="@job" OnValidSubmit="@OnCreateJob">
     <JobFormView buttonText="Opret job" job="@job"></JobFormView>
 </EditForm>
 
@@ -29,15 +29,6 @@
 
     private Job job = new Job();
     private UserModel user = new UserModel();
-
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JS.InvokeVoidAsync("initTextField");
-        }
-    }
 
     protected override async Task OnInitializedAsync()
     {

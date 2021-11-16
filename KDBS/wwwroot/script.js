@@ -36,14 +36,6 @@ function addPins(pins) {
     return "";
 }
 
-
-function initTextField() {
-    tinymce.init({
-        selector: '#mytextarea',
-        height: "400px"
-    });
-}
-
 function removeAllPins() {
     for (var i = 0; i < window.pins.length; i++) {
         var pin = window.pins[i]

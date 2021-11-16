@@ -20,7 +20,7 @@
 
 <CardHeaderArea HeaderText="@("Edit job opslag for id: " + @jobModel?.Title)" OnClickCallback="@OnClosePressed"></CardHeaderArea>
 
-<EditForm Model="@job" OnValidSubmit="@OnEditJob">
+<EditForm class="flex-1" Model="@job" OnValidSubmit="@OnEditJob">
     <JobFormView buttonText="Opdater" job="@job"></JobFormView>
 </EditForm>
 
@@ -33,14 +33,6 @@
     private Job job = new Job();
     private JobModel jobModel;
     private UserModel user = new UserModel();
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JS.InvokeVoidAsync("initTextField");
-        }
-    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -83,7 +75,7 @@
 
         jobModel.Title = job.JobTitle;
         jobModel.Salary = job.Salary;
-        jobModel.LinkToCompany = job.LinkToCompany;
+        jobModel.LinkToCompany = job.LinkToCompany ?? "";
         jobModel.Content = job.JobContent ?? "This should be filled";
         jobModel.Edited = DateTime.Now;
         jobModel.CategoryId = job.CategoryId;
