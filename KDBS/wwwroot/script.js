@@ -53,6 +53,8 @@ function onClickFactory(id) {
             id: id,
             pageX: Math.floor(e.point.x),
             pageY: Math.floor(e.point.y),
+            screenHight: window.innerHeight,
+            screenWidth: window.innerWidth,
         });
     }
 }

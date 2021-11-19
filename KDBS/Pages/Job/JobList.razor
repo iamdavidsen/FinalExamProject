@@ -22,7 +22,7 @@
 
 
 <div class="w-full h-full flex justify-center items-center relative">
-    <div class="w-full max-w-3xl">
+    <div class="w-full max-w-max">
         <h1 class="text-3xl font-bold mb-6">JobList</h1>
         <div class="card flex-shrink-0 w-full shadow-2xl bg-base-100">
             <div class="card-body">
@@ -92,8 +92,15 @@
         user = await _userManager.GetUserAsync(claim);
         user.Company = await _companyDb.GetCompanyByUser(user.Id);
 
-
-        job = await _jobDb.GetCompanyJobs(user.Company.CompanyId);
+        var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+        if (isAdmin)
+        {
+            job = await _jobDb.GetJobs();
+        }
+        else
+        {
+            job = await _jobDb.GetCompanyJobs(user.Company.CompanyId);
+        }
     }
 
     private void OnDeleteJob(string jobId)

@@ -15,7 +15,6 @@
 @inject IGoodsService _goodsDb
 @inject ICategoryService _categoryDb
 @inject AuthenticationStateProvider _authenticationStateProvider
-@inject UserManager<UserModel> _userManager
 @inject NavigationManager NavManager
 
 <CardHeaderArea HeaderText="@("Edit job opslag for id: " + @jobModel?.Title)" OnClickCallback="@OnClosePressed"></CardHeaderArea>
@@ -32,7 +31,6 @@
 
     private Job job = new Job();
     private JobModel jobModel;
-    private UserModel user = new UserModel();
 
     protected override async Task OnInitializedAsync()
     {
@@ -65,12 +63,6 @@
 
     private async Task OnEditJob()
     {
-        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-        var claim = authState.User;
-
-        user = await _userManager.GetUserAsync(claim);
-        user.Company = await _companyDb.GetCompanyByUser(user.Id);
-
         var selectedGoods = await _goodsDb.GetGoods(job.Goods.Where(g => g.IsSelected).Select(r => r.GoodsId).ToList());
 
         jobModel.Title = job.JobTitle;

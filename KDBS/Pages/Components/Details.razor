@@ -1,6 +1,4 @@
-﻿@attribute [Authorize(Roles = "Admin, Recruiter")]
-
-@using KDBS.Data
+﻿@using KDBS.Data
 @using KDBS.Models
 @using KDBS.Services.CategoryService
 @using KDBS.Services.JobService
@@ -15,7 +13,6 @@
 @inject IGoodsService _goodsDb
 @inject ICategoryService _categoryDb
 @inject AuthenticationStateProvider _authenticationStateProvider
-@inject UserManager<UserModel> _userManager
 @inject NavigationManager NavManager
 
 <CardHeaderArea HeaderText="@job.JobTitle" OnClickCallback="@OnClickCallback"></CardHeaderArea>
@@ -24,7 +21,7 @@
     @jobModel?.Company?.Name
 </div>
 
-<div class="flex">
+<div class="flex flex-wrap">
     <div class="label label-text pl-0">
         <div class="badge badge-secondary">
             @job.Salary kr
@@ -76,7 +73,6 @@
 
     private Job job = new Job();
     private JobModel jobModel;
-    private UserModel user = new UserModel();
 
     protected override async Task OnInitializedAsync()
     {

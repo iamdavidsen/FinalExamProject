@@ -1,26 +1,19 @@
-﻿using KDBS.Areas.Identity;
+﻿using System.Threading.Tasks;
+using KDBS.Areas.Identity;
 using KDBS.Data;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using KDBS.Services.CategoryService;
 using KDBS.Services.CompanyService;
 using KDBS.Services.GeocodingService;
 using KDBS.Services.GoodsService;
 using KDBS.Services.JobService;
-using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace KDBS
 {
@@ -70,8 +63,9 @@ namespace KDBS
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app,
-            IWebHostEnvironment env, 
-            UserManager<UserModel> userManager, 
+            IWebHostEnvironment env,
+            UserManager<UserModel> userManager,
+            ICompanyService companyService,
             RoleManager<IdentityRole> roleManager
         )
         {
@@ -102,10 +96,10 @@ namespace KDBS
                 endpoints.MapFallbackToPage("/_Host");
             });
 
-            Task.Run(() => CreateRolesAndUsers(userManager, roleManager)).Wait();
+            Task.Run(() => CreateRolesAndUsers(userManager, roleManager, companyService)).Wait();
         }
 
-        private async Task CreateRolesAndUsers(UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager)
+        private async Task CreateRolesAndUsers(UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager, ICompanyService companyService)
         {
             var adminExist = await roleManager.RoleExistsAsync("Admin");
 
@@ -119,7 +113,7 @@ namespace KDBS
                 {
                     FirstName = "Admin",
                     LastName = "Admin",
-                    UserName = "Administrator", 
+                    UserName = "Administrator",
                     Email = "admin@rasmusdavidsen.com"
                 };
                 var userPWD = "test123";
@@ -129,6 +123,21 @@ namespace KDBS
                 if (chkUser.Succeeded)
                 {
                     await userManager.AddToRoleAsync(user, "Admin");
+
+                    var address = "Telegrafvej 9";
+                    var zipcode = 2750;
+
+                    var company = new CompanyModel()
+                    {
+                        Name = "Admins A/S",
+                        Address = address,
+                        City = "Ballerup",
+                        ZipCode = zipcode,
+                        User = user,
+                        Latitude = 55.733336,
+                        Longitude = 12.343428
+                    };
+                    await companyService.CreateCompany(company);
                 }
             }
 

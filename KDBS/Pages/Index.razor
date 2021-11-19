@@ -18,7 +18,7 @@
         <div class="absolute job-popup card shadow-2xl bg-base-100" style="@_overlayStyle">
             <div class="card-body max-w-xs">
                 <h2 class="card-title">@_selectedJob?.Title</h2>
-                <div class="prose overflow-hidden" style="max-height: 136px;">
+                <div class="prose overflow-hidden max-h-40">
                     @_selectedContent
                 </div>
                 <button @onclick="@OnReadMoreClick" class="btn btn-primary mt-5">Læs mere</button>
@@ -55,7 +55,7 @@
 
     private JobModel? _selectedJob = null;
     private MarkupString _selectedContent = (MarkupString)"";
-    private Pagination _pageNumbers = new Pagination() {CurrentPage = 1, TotalPages = 0};
+    private Pagination _pageNumbers = new Pagination() { CurrentPage = 1, TotalPages = 0 };
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -89,8 +89,7 @@
         _pageNumbers.CurrentPage = 1;
 
         await LoadCurrentJob();
-
-        _overlayStyle = $"left: {pinClickEvent.PageX}px; top: {pinClickEvent.PageY}px";
+        ShowPopup(pinClickEvent.PageX, pinClickEvent.PageY, pinClickEvent.ScreenWidth, pinClickEvent.ScreenHeight);
         StateHasChanged();
     }
 
@@ -125,6 +124,19 @@
         await _js.InvokeVoidAsync("addPins", pins);
     }
 
+    private void ShowPopup(int x, int y,  int width, int height)
+    {
+        var xOffset = x;
+        var yOffset = y;
+
+        if (y - 300 < 0)
+        {
+            yOffset = 300;
+        }
+
+        _overlayStyle = $"left: {xOffset}px; top: {yOffset}px";
+    }
+
     private async Task LoadCurrentJob()
     {
         var jobId = _currentPin?.Jobs[_currentPreviewIndex];
@@ -150,7 +162,6 @@
         _selectedJob = job;
         var jobContent = (MarkupString)job.Content;
         _selectedContent = jobContent;
-        //_selectedContent = (jobContent.Length > 150 ? jobContent.Substring(0, 150) + "..." : jobContent);
     }
 
     private async Task Next()
