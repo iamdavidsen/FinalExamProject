@@ -1,7 +1,9 @@
 ﻿@using KDBS.Models
+@using TinyMCE.Blazor
 
-<DataAnnotationsValidator />
-<ValidationSummary />
+
+<DataAnnotationsValidator/>
+<ValidationSummary/>
 <div class="flex flex-col h-full overflow-hidden">
     <div class="flex-1 overflow-auto">
         <div class="flex h-full justify-between overflow-hidden">
@@ -10,16 +12,19 @@
                     <div class="label label-text">
                         Title
                     </div>
-                    <InputText id="title" class="input input-bordered" @bind-Value="job.JobTitle" />
+                    <InputText id="title" class="input input-bordered" @bind-Value="job.JobTitle"/>
                 </label>
 
                 <label class="form-control">
                     <div class="label label-text">
                         Beskrivelse
                     </div>
-                    <TinyMCE.Blazor.Editor class="input input-bordered"
-                                           @bind-Value="job.JobContent"
-                                           Conf="@editorConf" />
+                    <Editor
+                        class="input input-bordered"
+                        @bind-Value="job.JobContent"
+                        ScriptSrc="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.10.2/tinymce.min.js"
+                        Conf="@editorConf"
+                    />
                 </label>
             </div>
 
@@ -40,13 +45,13 @@
                     <div class="label label-text">
                         Løn
                     </div>
-                    <InputNumber id="salary" class="input input-bordered" @bind-Value="job.Salary" />
+                    <InputNumber id="salary" class="input input-bordered" @bind-Value="job.Salary"/>
                 </label>
                 <label class="form-control">
                     <div class="label label-text">
                         Hjemmeside link
                     </div>
-                    <InputText id="linkToCompany" class="input input-bordered" @bind-Value="job.LinkToCompany" />
+                    <InputText id="linkToCompany" class="input input-bordered" @bind-Value="job.LinkToCompany"/>
                 </label>
 
                 <div class="form-control">
@@ -61,7 +66,7 @@
                                     <div>
                                         @good.Title:
                                     </div>
-                                    <InputCheckbox class="checkbox" style="height: 1.2rem; width: 1.2rem;" id="@good.GoodsId" @bind-Value="@good.IsSelected" />
+                                    <InputCheckbox class="checkbox" style="height: 1.2rem; width: 1.2rem;" id="@good.GoodsId" @bind-Value="@good.IsSelected"/>
                                 </label>
 
                             </li>
@@ -77,12 +82,16 @@
 </div>
 
 @code {
+
     [Parameter]
     public Job job { get; set; }
+
     [Parameter]
     public string buttonText { get; set; }
 
-    private Dictionary<string, object> editorConf = new Dictionary<string, object>{
-        { "height", 400}
-      };
+    private Dictionary<string, object> editorConf = new Dictionary<string, object>
+    {
+        { "height", 400 }
+    };
+
 }

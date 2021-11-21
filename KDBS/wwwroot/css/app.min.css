@@ -2314,6 +2314,10 @@ html {
   z-index: 2000;
 }
 
+.tox-tinymce-aux {
+  z-index: 3000 !important;
+}
+
 @media (min-width: 640px) {
 }
 

@@ -13,3 +13,7 @@
 .z-over-map {
     z-index: 2000;
 }
+
+.tox-tinymce-aux {
+    z-index: 3000 !important;
+}
