@@ -1,7 +1,6 @@
 ﻿@using KDBS.Models
 @using TinyMCE.Blazor
 
-
 <DataAnnotationsValidator/>
 <ValidationSummary/>
 <div class="flex flex-col h-full overflow-hidden">
@@ -12,7 +11,7 @@
                     <div class="label label-text">
                         Title
                     </div>
-                    <InputText id="title" class="input input-bordered" @bind-Value="job.JobTitle"/>
+                    <InputText id="title" class="input input-bordered" @bind-Value="Job.JobTitle"/>
                 </label>
 
                 <label class="form-control">
@@ -21,10 +20,9 @@
                     </div>
                     <Editor
                         class="input input-bordered"
-                        @bind-Value="job.JobContent"
+                        @bind-Value="Job.JobContent"
                         ScriptSrc="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.10.2/tinymce.min.js"
-                        Conf="@editorConf"
-                    />
+                        Conf="@_editorConf"/>
                 </label>
             </div>
 
@@ -33,10 +31,10 @@
                     <div class="label label-text">
                         Kategorier
                     </div>
-                    <InputSelect id="category" class="input input-bordered" @bind-Value="@job.CategoryId">
-                        @foreach (var category in job.Categories ?? new List<Category>())
+                    <InputSelect id="category" class="input input-bordered" @bind-Value="@Job.CategoryId">
+                        @foreach (var category in Job.Categories ?? new List<CheckboxOption>())
                         {
-                            <option value="@category.CategoryId">@category.Title</option>
+                            <option value="@category.Id">@category.Title</option>
                         }
                     </InputSelect>
                 </label>
@@ -45,13 +43,13 @@
                     <div class="label label-text">
                         Løn
                     </div>
-                    <InputNumber id="salary" class="input input-bordered" @bind-Value="job.Salary"/>
+                    <InputNumber id="salary" class="input input-bordered" @bind-Value="Job.Salary"/>
                 </label>
                 <label class="form-control">
                     <div class="label label-text">
                         Hjemmeside link
                     </div>
-                    <InputText id="linkToCompany" class="input input-bordered" @bind-Value="job.LinkToCompany"/>
+                    <InputText id="linkToCompany" class="input input-bordered" @bind-Value="Job.LinkToCompany"/>
                 </label>
 
                 <div class="form-control">
@@ -59,14 +57,14 @@
                         Goder
                     </div>
                     <ul>
-                        @foreach (var good in job.Goods ?? new List<Goods>())
+                        @foreach (var good in Job.Goods ?? new List<CheckboxOption>())
                         {
                             <li class="pl-3">
                                 <label class="cursor-pointer label label-text p-0 pb-2">
                                     <div>
                                         @good.Title:
                                     </div>
-                                    <InputCheckbox class="checkbox" style="height: 1.2rem; width: 1.2rem;" id="@good.GoodsId" @bind-Value="@good.IsSelected"/>
+                                    <InputCheckbox class="checkbox" style="height: 1.2rem; width: 1.2rem;" id="@good.Id" @bind-Value="@good.Selected"/>
                                 </label>
 
                             </li>
@@ -77,19 +75,19 @@
         </div>
     </div>
     <div class="form-control flex-shrink-0 mt-6">
-        <button type="submit" class="btn btn-primary">@buttonText</button>
+        <button type="submit" class="btn btn-primary">@ButtonText</button>
     </div>
 </div>
 
 @code {
 
     [Parameter]
-    public Job job { get; set; }
+    public JobForm Job { get; set; }
 
     [Parameter]
-    public string buttonText { get; set; }
+    public string ButtonText { get; set; }
 
-    private Dictionary<string, object> editorConf = new Dictionary<string, object>
+    private Dictionary<string, object> _editorConf = new()
     {
         { "height", 400 }
     };

@@ -1,8 +1,7 @@
 ﻿@page
-@using KDBS.Data
-@using Microsoft.AspNetCore.Identity
 @attribute [IgnoreAntiforgeryToken]
 @inject SignInManager<UserModel> SignInManager
+
 @functions {
     public async Task<IActionResult> OnPost()
     {

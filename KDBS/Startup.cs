@@ -109,13 +109,7 @@ namespace KDBS
                 await roleManager.CreateAsync(role);
 
                 // Todo Change admin email and password
-                var user = new UserModel
-                {
-                    FirstName = "Admin",
-                    LastName = "Admin",
-                    UserName = "Administrator",
-                    Email = "admin@rasmusdavidsen.com"
-                };
+                var user = new UserModel { FirstName = "Admin", LastName = "Admin", UserName = "Administrator", Email = "admin@rasmusdavidsen.com" };
                 var userPWD = "test123";
 
                 var chkUser = await userManager.CreateAsync(user, userPWD);
@@ -127,7 +121,7 @@ namespace KDBS
                     var address = "Telegrafvej 9";
                     var zipcode = 2750;
 
-                    var company = new CompanyModel()
+                    var company = new CompanyModel
                     {
                         Name = "Admins A/S",
                         Address = address,

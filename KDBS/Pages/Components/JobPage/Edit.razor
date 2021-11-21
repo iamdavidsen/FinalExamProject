@@ -1,0 +1,82 @@
+﻿@using KDBS.Services.JobService
+@using KDBS.Services.CompanyService
+@using KDBS.Services.GoodsService
+@using KDBS.Services.CategoryService
+@using KDBS.Models
+@using KDBS.Data
+
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+
+@attribute [Authorize(Roles = "Admin, Recruiter")]
+
+@inject IJSRuntime _js
+@inject IJobService _jobDb
+@inject ICompanyService _companyDb
+@inject IGoodsService _goodsDb
+@inject ICategoryService _categoryDb
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject NavigationManager _navManager
+
+<CardHeaderArea HeaderText="@("Edit job opslag for id: " + _jobModel?.Title)" OnClickCallback="@OnClosePressed"></CardHeaderArea>
+
+<EditForm class="flex-1" Model="@_job" OnValidSubmit="@OnEditJob">
+    <JobFormView ButtonText="Opdater" Job="@_job"></JobFormView>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public string JobId { get; set; }
+
+    [Parameter]
+    public EventCallback OnClickCallback { get; set; }
+
+    private JobForm _job = new();
+    private JobModel _jobModel;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _jobModel = await _jobDb.GetJob(JobId);
+        var goods = await _goodsDb.GetGoods();
+        var category = await _categoryDb.GetCategories();
+
+        _job = new JobForm { JobTitle = _jobModel.Title, JobContent = _jobModel.Content, CategoryId = _jobModel.CategoryId, Salary = _jobModel.Salary, LinkToCompany = _jobModel.LinkToCompany };
+
+        _job.Goods = goods.Select(g => new CheckboxOption
+        {
+            Id = g.GoodsId,
+            Title = g.Title,
+            Selected = _jobModel.Goods?.Any(jg => jg.GoodsId == g.GoodsId) ?? false
+        }).ToList();
+
+
+        _job.Categories = category.Select(c => new CheckboxOption
+        {
+            Id = c.CategoryId,
+            Title = c.Title
+        }).ToList();
+
+    }
+
+    private async Task OnClosePressed()
+    {
+        await OnClickCallback.InvokeAsync();
+    }
+
+    private async Task OnEditJob()
+    {
+        var selectedGoods = await _goodsDb.GetGoods(_job.Goods.Where(g => g.Selected).Select(r => r.Id).ToList());
+
+        _jobModel.Title = _job.JobTitle;
+        _jobModel.Salary = _job.Salary;
+        _jobModel.LinkToCompany = _job.LinkToCompany ?? "";
+        _jobModel.Content = _job.JobContent ?? "This should be filled";
+        _jobModel.Edited = DateTime.Now;
+        _jobModel.CategoryId = _job.CategoryId;
+        _jobModel.Goods = selectedGoods;
+
+        await _jobDb.EditJob(_jobModel);
+        await OnClickCallback.InvokeAsync();
+    }
+}

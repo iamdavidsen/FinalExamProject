@@ -17,18 +17,18 @@
 
 function addPins(pins) {
     removeAllPins()
-    
+
     for (var i = 0; i < pins.length; i++) {
         var pin = pins[i]
-        
+
         var coordinate = {
             latitude: pin.latitude,
             longitude: pin.longitude
-        } 
+        }
 
         var pushpin = new Microsoft.Maps.Pushpin(coordinate, null);
         Microsoft.Maps.Events.addHandler(pushpin, 'click', onClickFactory(pin.id));
-        
+
         window.pins.push(pushpin)
         window.map.entities.push(pushpin);
     }
@@ -41,12 +41,12 @@ function removeAllPins() {
         var pin = window.pins[i]
         window.map.entities.remove(pin);
     }
-    
+
     window.pins = []
 }
 
 function onClickFactory(id) {
-    return function(e) {
+    return function (e) {
         console.log(e);
 
         window.dotnetRef && window.dotnetRef.invokeMethodAsync('ClickedOnPin', {

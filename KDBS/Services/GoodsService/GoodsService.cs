@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 using KDBS.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace KDBS.Services.GoodsService {
-    class GoodsService : IGoodsService {
+namespace KDBS.Services.GoodsService
+{
+    internal class GoodsService : IGoodsService
+    {
         private readonly ApplicationDbContext _dbContext;
 
         public GoodsService(ApplicationDbContext dbContext)
@@ -22,7 +24,7 @@ namespace KDBS.Services.GoodsService {
         {
             return _dbContext.Goods.Where(g => goodsIds.Contains(g.GoodsId)).ToListAsync();
         }
-        
+
         public Task<GoodsModel> GetGoods(string goodsId)
         {
             return _dbContext.Goods.Where(g => g.GoodsId == goodsId).FirstOrDefaultAsync();

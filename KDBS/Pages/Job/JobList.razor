@@ -1,15 +1,15 @@
 ﻿@page "/job"
-@attribute [Authorize(Roles = "Admin, Recruiter")]
-
-@using KDBS.Data
-@using KDBS.Models
-@using KDBS.Pages.Components
-@using KDBS.Services.CategoryService
 @using KDBS.Services.JobService
 @using KDBS.Services.CompanyService
 @using KDBS.Services.GoodsService
+@using KDBS.Services.CategoryService
+@using KDBS.Data
+@using KDBS.Pages.Components.JobPage
+
 @using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Identity
+
+@attribute [Authorize(Roles = "Admin, Recruiter")]
 
 @inject IJSRuntime JS
 @inject IJobService _jobDb
@@ -20,7 +20,6 @@
 @inject UserManager<UserModel> _userManager
 
 
-
 <div class="w-full h-full flex justify-center items-center relative">
     <div class="w-full max-w-max">
         <h1 class="text-3xl font-bold mb-6">JobList</h1>
@@ -29,26 +28,28 @@
                 <button @onclick="@OnCreateJobClick" class="btn btn-ghost btn-sm rounded-btn mb-3">Opret jobopslag</button>
                 <table class="table w-full table-zebra">
                     <thead>
-                        <tr>
-                            <th class="text-center">Title</th>
-                            <th class="text-center">Oprettet</th>
-                            <th class="text-center">Redigeret</th>
-                            <th class="text-center">Handlinger</th>
-                        </tr>
+                    <tr>
+                        <th class="text-center">Title</th>
+                        <th class="text-center">Oprettet</th>
+                        <th class="text-center">Redigeret</th>
+                        <th class="text-center">Handlinger</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in job)
-                        {
-                            <tr>
-                                <td><button @onclick="@(e => OnReadMoreClick(item.JobId))" class="btn btn-ghost btn-sm rounded-btn">@item.Title</button></td>
-                                <td>@item.Added</td>
-                                <td>@item.Edited</td>
-                                <td>
-                                    <button @onclick="@(e => OnEditJobClick(item.JobId))" class="btn btn-ghost btn-sm rounded-btn">Rediger</button>
-                                    <button @onclick="@(e => OnDeleteJob(@item.JobId))" class="btn btn-ghost btn-sm rounded-btn">Slet</button>
-                                </td>
-                            </tr>
-                        }
+                    @foreach (var item in job)
+                    {
+                        <tr>
+                            <td>
+                                <button @onclick="@(e => OnReadMoreClick(item.JobId))" class="btn btn-ghost btn-sm rounded-btn">@item.Title</button>
+                            </td>
+                            <td>@item.Added</td>
+                            <td>@item.Edited</td>
+                            <td>
+                                <button @onclick="@(e => OnEditJobClick(item.JobId))" class="btn btn-ghost btn-sm rounded-btn">Rediger</button>
+                                <button @onclick="@(e => OnDeleteJob(item.JobId))" class="btn btn-ghost btn-sm rounded-btn">Slet</button>
+                            </td>
+                        </tr>
+                    }
                     </tbody>
                 </table>
             </div>
@@ -76,13 +77,13 @@
 
 
 @code {
-    private List<JobModel> job = new List<JobModel>();
-    private UserModel user = new UserModel();
+    private List<JobModel> job = new();
+    private UserModel user = new();
     private string _jobId = "";
 
-    private bool ShowMoreInfo = false;
-    private bool ShowCreateJob = false;
-    private bool ShowEditJob = false;
+    private bool ShowMoreInfo;
+    private bool ShowCreateJob;
+    private bool ShowEditJob;
 
     protected override async Task OnInitializedAsync()
     {

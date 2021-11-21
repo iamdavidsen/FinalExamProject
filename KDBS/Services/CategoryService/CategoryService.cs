@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 using KDBS.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace KDBS.Services.CategoryService {
-    class CategoryService : ICategoryService {
+namespace KDBS.Services.CategoryService
+{
+    internal class CategoryService : ICategoryService
+    {
         private readonly ApplicationDbContext _dbContext;
 
         public CategoryService(ApplicationDbContext dbContext)
@@ -17,7 +19,7 @@ namespace KDBS.Services.CategoryService {
         {
             return _dbContext.Categories.ToListAsync();
         }
-        
+
         public Task<CategoryModel> GetCategory(string categoryId)
         {
             return _dbContext.Categories.Where(c => c.CategoryId == categoryId).FirstOrDefaultAsync();

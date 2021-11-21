@@ -7,27 +7,27 @@ namespace KDBS.Models.Forms
         [Required]
         [Display(Name = "Fornavn")]
         public string FirstName { get; set; }
-        
+
         [Required]
         [Display(Name = "Efternavn")]
         public string LastName { get; set; }
-        
+
         [Required]
         [Display(Name = "Virksomhedsnavn")]
         public string CompanyName { get; set; }
-        
+
         [Required]
         [Display(Name = "Addresse")]
         public string Address { get; set; }
-        
+
         [Required]
         [Display(Name = "By")]
         public string City { get; set; }
-        
+
         [Required]
         [Display(Name = "Postnummer")]
         public int Zipcode { get; set; }
-        
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

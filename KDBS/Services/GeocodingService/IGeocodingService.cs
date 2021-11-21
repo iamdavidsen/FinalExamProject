@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using KDBS.Models;
 
 namespace KDBS.Services.GeocodingService

@@ -1,8 +1,7 @@
-﻿@using KDBS.Models
-@using KDBS.Models.Events
+﻿@using KDBS.Services.GoodsService
 @using KDBS.Services.CategoryService
-@using KDBS.Services.GoodsService
-@using Microsoft.AspNetCore.Components
+@using KDBS.Models.Events
+@using KDBS.Models
 @using System.Globalization
 @inject IGoodsService _goodsService;
 @inject ICategoryService _categoryService;
@@ -21,7 +20,7 @@
     <div class="dropdown flex-grow">
         <div tabindex="0" class="btn btn-block">Fagområder</div>
         <ul tabindex="0" class="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52">
-            @foreach (var checkbox in Categories)
+            @foreach (var checkbox in _categories)
             {
                 <li>
                     <label class="cursor-pointer label label-text">
@@ -35,7 +34,7 @@
     <div class="dropdown flex-grow">
         <div tabindex="0" class="btn btn-block">Goder</div>
         <ul tabindex="0" class="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52">
-            @foreach (var checkbox in Goods)
+            @foreach (var checkbox in _goods)
             {
                 <li>
                     <label class="cursor-pointer label label-text">
@@ -53,6 +52,8 @@
     [Parameter]
     public EventCallback<FilterChangedEvent> OnFilterChanged { get; set; }
 
+    private int Salary { get; set; } = 0;
+
     private string SearchQuery
     {
         get => _searchQuery;
@@ -64,20 +65,19 @@
 
     private string _searchQuery = "";
 
-    private int Salary { get; set; } = 0;
-    private List<CheckboxOption> Categories = new();
-    private List<CheckboxOption> Goods = new();
+    private List<CheckboxOption> _categories = new();
+    private List<CheckboxOption> _goods = new();
 
     protected override async Task OnInitializedAsync()
     {
-        Categories = (await _categoryService.GetCategories()).Select(g => new CheckboxOption(g.CategoryId, g.Title, false)).ToList();
-        Goods = (await _goodsService.GetGoods()).Select(g => new CheckboxOption(g.GoodsId, g.Title, false)).ToList();
+        _categories = (await _categoryService.GetCategories()).Select(g => new CheckboxOption(g.CategoryId, g.Title, false)).ToList();
+        _goods = (await _goodsService.GetGoods()).Select(g => new CheckboxOption(g.GoodsId, g.Title, false)).ToList();
     }
 
     private void FilterChanged()
     {
-        var categories = Categories.Where(c => c.Selected).Select(c => c.Id).ToList();
-        var goods = Goods.Where(g => g.Selected).Select(g => g.Id).ToList();
+        var categories = _categories.Where(c => c.Selected).Select(c => c.Id).ToList();
+        var goods = _goods.Where(g => g.Selected).Select(g => g.Id).ToList();
 
         OnFilterChanged.InvokeAsync(new FilterChangedEvent(SearchQuery, Salary, categories, goods));
     }

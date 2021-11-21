@@ -4,9 +4,10 @@ using KDBS.Data;
 
 namespace KDBS.Services.GoodsService
 {
-    public interface IGoodsService {
+    public interface IGoodsService
+    {
         Task<List<GoodsModel>> GetGoods();
-        
+
         Task<GoodsModel> GetGoods(string goodsId);
         Task<List<GoodsModel>> GetGoods(List<string> goodsIds);
 

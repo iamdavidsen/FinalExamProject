@@ -4,11 +4,11 @@ namespace KDBS.Models.Events
 {
     public class FilterChangedEvent
     {
-        public string SearchQuery;
-        public int Salary;
         public List<string> Categories;
         public List<string> Goods;
-        
+        public int Salary;
+        public string SearchQuery;
+
         public FilterChangedEvent(string searchQuery, int salary, List<string> categories, List<string> goods)
         {
             SearchQuery = searchQuery;

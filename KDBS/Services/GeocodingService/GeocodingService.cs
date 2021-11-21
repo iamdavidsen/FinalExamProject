@@ -5,11 +5,12 @@ using KDBS.Models.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
-namespace KDBS.Services.GeocodingService {
-    class GeocodingService : IGeocodingService
+namespace KDBS.Services.GeocodingService
+{
+    internal class GeocodingService : IGeocodingService
     {
         private readonly IConfiguration _configuration;
-        
+
         public GeocodingService(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -19,7 +20,7 @@ namespace KDBS.Services.GeocodingService {
         {
             using var httpClient = new HttpClient();
             using var response = await httpClient.GetAsync(CreateBingMapsCall(zipcode.ToString(), address));
-            
+
             var apiResponse = await response.Content.ReadAsStringAsync();
             var json = JObject.Parse(apiResponse);
 
@@ -34,7 +35,7 @@ namespace KDBS.Services.GeocodingService {
             var coordinate = new Coordinate(latitude, longitude);
             return coordinate;
         }
-        
+
         private string CreateBingMapsCall(string postalCode, string address)
         {
             var key = _configuration.GetValue<string>("BingMaps");

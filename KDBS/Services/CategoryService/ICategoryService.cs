@@ -4,9 +4,10 @@ using KDBS.Data;
 
 namespace KDBS.Services.CategoryService
 {
-    public interface ICategoryService{
+    public interface ICategoryService
+    {
         Task<List<CategoryModel>> GetCategories();
-        
+
         Task<CategoryModel> GetCategory(string categoryId);
 
         Task CreateCategory(CategoryModel categoryModel);

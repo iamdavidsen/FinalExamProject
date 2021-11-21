@@ -1,6 +1,9 @@
-﻿namespace KDBS.Models.Exceptions
+﻿using System;
+
+namespace KDBS.Models.Exceptions
 {
-    public class ObjectNotFoundException : System.Exception {
+    public class ObjectNotFoundException : Exception
+    {
         public ObjectNotFoundException(string message) : base(message)
         {
 

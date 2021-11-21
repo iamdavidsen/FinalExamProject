@@ -1,10 +1,11 @@
 ﻿@page "/"
+
 @using Microsoft.Extensions.Configuration
 @using KDBS.Services.JobService
 @using KDBS.Models
 @using KDBS.Models.Events
 @using KDBS.Data
-@using KDBS.Pages.Job
+@using KDBS.Pages.Components.JobPage
 @implements IDisposable
 @inject IJSRuntime _js
 @inject IConfiguration _configuration
@@ -25,9 +26,13 @@
                 @if (HasNavigation)
                 {
                     <div class="mt-5 flex justify-between">
-                        <button @onclick="@Previous" class="btn-xs p-0"><ion-icon name="chevron-back-outline"></ion-icon></button>
+                        <button @onclick="@Previous" class="btn-xs p-0">
+                            <ion-icon name="chevron-back-outline"></ion-icon>
+                        </button>
                         <label>@_pageNumbers.CurrentPage / @_pageNumbers.TotalPages jobs</label>
-                        <button @onclick="@Next" class="btn-xs p-0"><ion-icon name="chevron-forward-outline"></ion-icon></button>
+                        <button @onclick="@Next" class="btn-xs p-0">
+                            <ion-icon name="chevron-forward-outline"></ion-icon>
+                        </button>
                     </div>
                 }
             </div>
@@ -43,19 +48,19 @@
 
 @code {
     private bool HasNavigation => _currentPin != null && _currentPin.Jobs.Count > 1;
-    private bool ReadMoreIsActive = false;
+    private bool ReadMoreIsActive;
 
-    private DotNetObjectReference<Index>? _objectReference = null;
-    private List<PreviewPoint> _previewPoints = new List<PreviewPoint>();
+    private DotNetObjectReference<Index>? _objectReference;
+    private List<PreviewPoint> _previewPoints = new();
 
     private string _overlayStyle = "display: none;";
 
-    private int _currentPreviewIndex = 0;
-    private PreviewPoint? _currentPin = null;
+    private int _currentPreviewIndex;
+    private PreviewPoint? _currentPin;
 
-    private JobModel? _selectedJob = null;
+    private JobModel? _selectedJob;
     private MarkupString _selectedContent = (MarkupString)"";
-    private Pagination _pageNumbers = new Pagination() { CurrentPage = 1, TotalPages = 0 };
+    private readonly Pagination _pageNumbers = new() { CurrentPage = 1, TotalPages = 0 };
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -74,8 +79,7 @@
         ReadMoreIsActive = !ReadMoreIsActive;
     }
 
-    [JSInvokable]
-    public async Task ClickedOnPin(PinClickEvent pinClickEvent)
+    [JSInvokable] public async Task ClickedOnPin(PinClickEvent pinClickEvent)
     {
         var previewPoint = _previewPoints.FirstOrDefault(p => p.Id == pinClickEvent.Id);
 
@@ -93,8 +97,7 @@
         StateHasChanged();
     }
 
-    [JSInvokable]
-    public void HidePopup()
+    [JSInvokable] public void HidePopup()
     {
         _overlayStyle = "display: none;";
         StateHasChanged();
@@ -111,20 +114,20 @@
 
         var pins = jobs
             .GroupBy(j => $@"{j.Company.Latitude}{j.Company.Longitude}")
-            .Select(j => new PreviewPoint()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Latitude = j.First().Company.Latitude,
-                    Longitude = j.First().Company.Longitude,
-                    Jobs = j.Select(job => job.JobId).ToList()
-                }).ToList();
+            .Select(j => new PreviewPoint
+            {
+                Id = Guid.NewGuid().ToString(),
+                Latitude = j.First().Company.Latitude,
+                Longitude = j.First().Company.Longitude,
+                Jobs = j.Select(job => job.JobId).ToList()
+            }).ToList();
 
         _previewPoints = pins;
         _pageNumbers.TotalPages = jobs.Count();
         await _js.InvokeVoidAsync("addPins", pins);
     }
 
-    private void ShowPopup(int x, int y,  int width, int height)
+    private void ShowPopup(int x, int y, int width, int height)
     {
         var xOffset = x;
         var yOffset = y;

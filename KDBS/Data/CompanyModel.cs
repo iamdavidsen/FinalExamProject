@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KDBS.Data
 {
@@ -19,9 +17,9 @@ namespace KDBS.Data
         public double Latitude { get; set; }
 
         public double Longitude { get; set; }
-        
+
         public virtual UserModel User { get; set; }
-        
+
         public string UserId { get; set; }
 
         public virtual List<JobModel> Jobs { get; set; }

@@ -1,0 +1,102 @@
+﻿@using KDBS.Services.JobService
+@using KDBS.Services.CompanyService
+@using KDBS.Services.GoodsService
+@using KDBS.Services.CategoryService
+@using KDBS.Models
+@using KDBS.Data
+
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+
+@inject IJSRuntime _js
+@inject IJobService _jobDb
+@inject ICompanyService _companyDb
+@inject IGoodsService _goodsDb
+@inject ICategoryService _categoryDb
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject NavigationManager _navManager
+
+<CardHeaderArea HeaderText="@_job.JobTitle" OnClickCallback="@OnClickCallback"></CardHeaderArea>
+
+<div class="label label-text text-xl pl-0">
+    @_jobModel?.Company?.Name
+</div>
+
+<div class="flex flex-wrap">
+    <div class="label label-text pl-0">
+        <div class="badge badge-secondary">
+            @_job.Salary kr
+        </div>
+    </div>
+
+    @foreach (var category in _job.Categories ?? new List<CheckboxOption>())
+    {
+        @if (_jobModel?.CategoryId == category.Id)
+        {
+            <div class="label label-text ml-2">
+                <div class="badge badge-primary">
+                    @category.Title
+                </div>
+            </div>
+
+        }
+    }
+
+    <div class="label label-text ml-2">
+        @foreach (var good in _job.Goods ?? new List<CheckboxOption>())
+        {
+            @if (good.Selected)
+            {
+                <div class="badge badge-accent mr-1">
+                    @good.Title
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<div class="prose">
+    @((MarkupString)_job.JobContent)
+</div>
+
+<div>
+    @if (_job.LinkToCompany != null && _job.LinkToCompany != "")
+    {
+        <a href="@_job.LinkToCompany" target="_blank" class="btn btn-secondary">Ansøg her</a>
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public string JobId { get; set; }
+
+    [Parameter]
+    public EventCallback OnClickCallback { get; set; }
+
+    private JobForm _job = new();
+    private JobModel _jobModel;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _jobModel = await _jobDb.GetJob(JobId);
+
+        var goods = await _goodsDb.GetGoods();
+        var category = await _categoryDb.GetCategories();
+
+        _job = new JobForm { JobTitle = _jobModel.Title, JobContent = _jobModel.Content, CategoryId = _jobModel.CategoryId, Salary = _jobModel.Salary, LinkToCompany = _jobModel.LinkToCompany };
+
+        _job.Goods = goods.Select(g => new CheckboxOption
+        {
+            Id = g.GoodsId,
+            Title = g.Title,
+            Selected = _jobModel.Goods?.Any(jg => jg.GoodsId == g.GoodsId) ?? false
+        }).ToList();
+
+        _job.Categories = category.Select(c => new CheckboxOption
+        {
+            Id = c.CategoryId,
+            Title = c.Title
+        }).ToList();
+    }
+}
